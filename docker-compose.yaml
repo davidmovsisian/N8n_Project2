@@ -1,0 +1,17 @@
+services:
+  n8n:
+    build: .
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - C:/n8n/incoming_docs:/home/node/incoming_docs
+      - C:/n8n/output_docs:/home/node/output_docs
+    environment:
+      #- N8N_HOST=localhost
+      #- NODE_ENV=production
+
+volumes:
+  n8n_data:

@@ -1,0 +1,527 @@
+{
+  "name": "N8N Project2",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst filename = item.json.headers['x-filename']\nconst binaryData = item.binary.data;\n\nreturn [{\n  json: { filename },\n  binary: { data: binaryData }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        -272
+      ],
+      "id": "c9a01979-9075-4b3d-b539-1ca9f64f708f",
+      "name": "Retrive filename and data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d683c598-69de-412e-aadc-6cdbe096bfe0",
+              "leftValue": "={{ $json.extention }}",
+              "rightValue": "=pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "4aa85571-7717-47b9-b15d-70ab5c39b4bb",
+              "leftValue": "={{ $json.extention }}",
+              "rightValue": "docx",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1280,
+        -272
+      ],
+      "id": "b81230b4-a441-4422-9760-346c3924853c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -656,
+        -272
+      ],
+      "id": "e68109fd-33d6-4ae2-8910-6ac6b7740f05",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "document-intake",
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2016,
+        -272
+      ],
+      "id": "9699c269-6877-455e-a59a-36bb1a55069c",
+      "name": "Webhook",
+      "webhookId": "bc04ec10-5db2-47cc-adc8-2c858e1dfaae"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -2128,
+        192
+      ],
+      "id": "fb0b3b89-cb06-44af-8afb-b2c0f11f437d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "DqU08GaOuTaPSUGi",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1968,
+        240
+      ],
+      "id": "c513861d-f796-4e4a-ae6f-bbcb809e10ed",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9313a3ca-af14-4678-b9a8-4afc789ad3f2",
+              "leftValue": "={{ $('get extention').item.json.extention }}",
+              "rightValue": "pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1120,
+        -432
+      ],
+      "id": "d59cb7c9-133c-422a-9a2f-3cd12a5a2d3c",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nfor item in _items:\n  item[\"json\"][\"my_new_field\"] = 1\nreturn _items"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -928,
+        -496
+      ],
+      "id": "8949e1a5-5ab2-416d-839b-355d942102e1",
+      "name": "procced pdf"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nfor item in _items:\n  item[\"json\"][\"my_new_field\"] = 1\nreturn _items"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -912,
+        -336
+      ],
+      "id": "a0261d4c-bf76-45a3-9dfa-4e1a77e8f63d",
+      "name": "procceed docx"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1984,
+        48
+      ],
+      "id": "14f71219-95b2-4b44-9ed6-e7ac64477acb",
+      "name": "generate content"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"extention\": \"{{ $('Retrive filename and data').item.json.filename.split('.').pop() }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1488,
+        -272
+      ],
+      "id": "6f6edee4-2943-4e2d-8a20-78b748213a51",
+      "name": "get extention"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1984,
+        464
+      ],
+      "id": "cd4e50a6-0ffd-4d51-b20a-e70afbf63b1a",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "DqU08GaOuTaPSUGi",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1840,
+        416
+      ],
+      "id": "5e0bafc5-6416-4d81-b886-195396bdf9b6",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        -1488,
+        416
+      ],
+      "id": "55dffe8d-8551-4fce-b4f0-792d5f9c7fd9",
+      "name": "Send a message in Gmail",
+      "webhookId": "3ee8f1c2-d5e3-40bf-a462-aa4208dc09e2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3pCtcy2CzLaWy19Y",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -1664,
+        432
+      ],
+      "id": "7a533dfe-caa8-4c79-989c-88535f642834",
+      "name": "Update row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5av0YV97NFo5dHqH",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        -1392,
+        320
+      ],
+      "id": "398f7b35-581d-418d-af9c-bb1e70ac0812",
+      "name": "write Json to output_docs"
+    },
+    {
+      "parameters": {
+        "text": "HI",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        -1840,
+        256
+      ],
+      "id": "4e1e27eb-93d9-409b-84a6-1c606904f67d",
+      "name": "Enrich"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Retrive filename and data": {
+      "main": [
+        [
+          {
+            "node": "get extention",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "generate content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Retrive filename and data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "generate content",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "generate content",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "procced pdf",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "procceed docx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "procced pdf": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "procceed docx": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "generate content": {
+      "main": [
+        []
+      ]
+    },
+    "get extention": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Enrich",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Enrich",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "Enrich",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Enrich",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "write Json to output_docs": {
+      "ai_tool": [
+        [
+          {
+            "node": "Enrich",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrich": {
+      "ai_tool": [
+        [
+          {
+            "node": "generate content",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a964d4b1-f484-450e-843a-6470e35c4ff9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5a88e1ba34cacd53a7cb2710cfbb89d74b98fa60b214673b30dd15f2ad443a21"
+  },
+  "id": "MQnp5tEamDPuZHvB",
+  "tags": []
+}

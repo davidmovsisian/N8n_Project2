@@ -1,0 +1,8 @@
+watcher.py
+.venv
+__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+*.txt
