@@ -1,5 +1,5 @@
 {
-  "name": "N8N Project2",
+  "name": "N8N_Project",
   "nodes": [
     {
       "parameters": {
@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1760,
-        -272
+        -2176,
+        -304
       ],
       "id": "c9a01979-9075-4b3d-b539-1ca9f64f708f",
       "name": "Retrive filename and data"
@@ -51,8 +51,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1280,
-        -272
+        -1696,
+        -304
       ],
       "id": "b81230b4-a441-4422-9760-346c3924853c",
       "name": "If"
@@ -64,7 +64,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -656,
+        -1072,
         -272
       ],
       "id": "e68109fd-33d6-4ae2-8910-6ac6b7740f05",
@@ -81,8 +81,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -2016,
-        -272
+        -2432,
+        -304
       ],
       "id": "9699c269-6877-455e-a59a-36bb1a55069c",
       "name": "Webhook",
@@ -95,8 +95,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        -2128,
-        192
+        -2544,
+        160
       ],
       "id": "fb0b3b89-cb06-44af-8afb-b2c0f11f437d",
       "name": "Google Gemini Chat Model",
@@ -112,8 +112,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -1968,
-        240
+        -2384,
+        208
       ],
       "id": "c513861d-f796-4e4a-ae6f-bbcb809e10ed",
       "name": "Simple Memory"
@@ -145,8 +145,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1120,
-        -432
+        -1536,
+        -464
       ],
       "id": "d59cb7c9-133c-422a-9a2f-3cd12a5a2d3c",
       "name": "If1"
@@ -159,8 +159,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -928,
-        -496
+        -1344,
+        -528
       ],
       "id": "8949e1a5-5ab2-416d-839b-355d942102e1",
       "name": "procced pdf"
@@ -173,8 +173,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -912,
-        -336
+        -1328,
+        -368
       ],
       "id": "a0261d4c-bf76-45a3-9dfa-4e1a77e8f63d",
       "name": "procceed docx"
@@ -186,8 +186,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -1984,
-        48
+        -2400,
+        16
       ],
       "id": "14f71219-95b2-4b44-9ed6-e7ac64477acb",
       "name": "generate content"
@@ -201,8 +201,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1488,
-        -272
+        -1904,
+        -304
       ],
       "id": "6f6edee4-2943-4e2d-8a20-78b748213a51",
       "name": "get extention"
@@ -214,8 +214,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        -1984,
-        464
+        -2336,
+        480
       ],
       "id": "cd4e50a6-0ffd-4d51-b20a-e70afbf63b1a",
       "name": "Google Gemini Chat Model1",
@@ -231,8 +231,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -1840,
-        416
+        -2192,
+        480
       ],
       "id": "5e0bafc5-6416-4d81-b886-195396bdf9b6",
       "name": "Simple Memory1"
@@ -244,8 +244,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        -1488,
-        416
+        -2016,
+        192
       ],
       "id": "55dffe8d-8551-4fce-b4f0-792d5f9c7fd9",
       "name": "Send a message in Gmail",
@@ -274,8 +274,8 @@
       "type": "n8n-nodes-base.googleSheetsTool",
       "typeVersion": 4.7,
       "position": [
-        -1664,
-        432
+        -2144,
+        192
       ],
       "id": "7a533dfe-caa8-4c79-989c-88535f642834",
       "name": "Update row in sheet in Google Sheets",
@@ -293,8 +293,8 @@
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.3,
       "position": [
-        -1392,
-        320
+        -1888,
+        192
       ],
       "id": "398f7b35-581d-418d-af9c-bb1e70ac0812",
       "name": "write Json to output_docs"
@@ -307,11 +307,55 @@
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "typeVersion": 3,
       "position": [
-        -1840,
-        256
+        -2336,
+        336
       ],
       "id": "4e1e27eb-93d9-409b-84a6-1c606904f67d",
       "name": "Enrich"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4a52b02c-3f09-49db-8873-d794b5ee3dab",
+              "leftValue": "={{ $('get extention').item.json.extention }}",
+              "rightValue": "txt",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1520,
+        -304
+      ],
+      "id": "70e0588c-ad0b-4fa9-872e-25e2b66575fd",
+      "name": "If2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        -208
+      ],
+      "id": "906ab08a-4544-46fe-aefe-144b4031ebf3",
+      "name": "No Operation, do nothing"
     }
   ],
   "pinData": {},
@@ -338,9 +382,9 @@
         ],
         [
           {
-            "node": "Merge",
+            "node": "If2",
             "type": "main",
-            "index": 2
+            "index": 0
           }
         ]
       ]
@@ -471,7 +515,7 @@
       "ai_tool": [
         [
           {
-            "node": "Enrich",
+            "node": "generate content",
             "type": "ai_tool",
             "index": 0
           }
@@ -482,7 +526,7 @@
       "ai_tool": [
         [
           {
-            "node": "Enrich",
+            "node": "generate content",
             "type": "ai_tool",
             "index": 0
           }
@@ -493,7 +537,7 @@
       "ai_tool": [
         [
           {
-            "node": "Enrich",
+            "node": "generate content",
             "type": "ai_tool",
             "index": 0
           }
@@ -510,6 +554,24 @@
           }
         ]
       ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -517,7 +579,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "a964d4b1-f484-450e-843a-6470e35c4ff9",
+  "versionId": "d7668c82-a62a-489f-829b-94d5d4713626",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "5a88e1ba34cacd53a7cb2710cfbb89d74b98fa60b214673b30dd15f2ad443a21"
