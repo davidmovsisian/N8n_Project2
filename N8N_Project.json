@@ -74,6 +74,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "document-intake",
+        "responseMode": "responseNode",
         "options": {
           "binaryPropertyName": "data"
         }
@@ -356,6 +357,32 @@
       ],
       "id": "906ab08a-4544-46fe-aefe-144b4031ebf3",
       "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2048,
+        16
+      ],
+      "id": "46877503-d9bc-449f-8fef-9a929a091f38",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -1840,
+        16
+      ],
+      "id": "b8a86d94-80a9-4d1e-8b15-ef325e4748a3",
+      "name": "Respond to Webhook"
     }
   ],
   "pinData": {},
@@ -475,7 +502,13 @@
     },
     "generate content": {
       "main": [
-        []
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "get extention": {
@@ -572,6 +605,17 @@
           }
         ]
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -579,7 +623,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "d7668c82-a62a-489f-829b-94d5d4713626",
+  "versionId": "134c598d-440d-44da-a960-3153a2eadc30",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "5a88e1ba34cacd53a7cb2710cfbb89d74b98fa60b214673b30dd15f2ad443a21"
