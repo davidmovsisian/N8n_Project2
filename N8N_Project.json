@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2176,
-        -304
+        -2544,
+        -336
       ],
       "id": "c9a01979-9075-4b3d-b539-1ca9f64f708f",
       "name": "Retrive filename and data"
@@ -51,8 +51,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1696,
-        -304
+        -2064,
+        -336
       ],
       "id": "b81230b4-a441-4422-9760-346c3924853c",
       "name": "If"
@@ -64,8 +64,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -1072,
-        -272
+        -1440,
+        -304
       ],
       "id": "e68109fd-33d6-4ae2-8910-6ac6b7740f05",
       "name": "Merge"
@@ -82,8 +82,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -2432,
-        -304
+        -2800,
+        -336
       ],
       "id": "9699c269-6877-455e-a59a-36bb1a55069c",
       "name": "Webhook",
@@ -96,8 +96,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        -2544,
-        160
+        -2912,
+        128
       ],
       "id": "fb0b3b89-cb06-44af-8afb-b2c0f11f437d",
       "name": "Google Gemini Chat Model",
@@ -113,8 +113,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -2384,
-        208
+        -2752,
+        176
       ],
       "id": "c513861d-f796-4e4a-ae6f-bbcb809e10ed",
       "name": "Simple Memory"
@@ -146,8 +146,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1536,
-        -464
+        -1904,
+        -496
       ],
       "id": "d59cb7c9-133c-422a-9a2f-3cd12a5a2d3c",
       "name": "If1"
@@ -160,8 +160,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1344,
-        -528
+        -1712,
+        -560
       ],
       "id": "8949e1a5-5ab2-416d-839b-355d942102e1",
       "name": "procced pdf"
@@ -174,8 +174,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1328,
-        -368
+        -1696,
+        -400
       ],
       "id": "a0261d4c-bf76-45a3-9dfa-4e1a77e8f63d",
       "name": "procceed docx"
@@ -187,8 +187,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -2400,
-        16
+        -2768,
+        -16
       ],
       "id": "14f71219-95b2-4b44-9ed6-e7ac64477acb",
       "name": "generate content"
@@ -202,8 +202,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1904,
-        -304
+        -2272,
+        -336
       ],
       "id": "6f6edee4-2943-4e2d-8a20-78b748213a51",
       "name": "get extention"
@@ -212,41 +212,11 @@
       "parameters": {
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        -2336,
-        480
-      ],
-      "id": "cd4e50a6-0ffd-4d51-b20a-e70afbf63b1a",
-      "name": "Google Gemini Chat Model1",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "DqU08GaOuTaPSUGi",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-      "typeVersion": 1.3,
-      "position": [
-        -2192,
-        480
-      ],
-      "id": "5e0bafc5-6416-4d81-b886-195396bdf9b6",
-      "name": "Simple Memory1"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        -2016,
-        192
+        -2384,
+        160
       ],
       "id": "55dffe8d-8551-4fce-b4f0-792d5f9c7fd9",
       "name": "Send a message in Gmail",
@@ -275,8 +245,8 @@
       "type": "n8n-nodes-base.googleSheetsTool",
       "typeVersion": 4.7,
       "position": [
-        -2144,
-        192
+        -2512,
+        160
       ],
       "id": "7a533dfe-caa8-4c79-989c-88535f642834",
       "name": "Update row in sheet in Google Sheets",
@@ -294,25 +264,11 @@
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.3,
       "position": [
-        -1888,
-        192
+        -2256,
+        160
       ],
       "id": "398f7b35-581d-418d-af9c-bb1e70ac0812",
       "name": "write Json to output_docs"
-    },
-    {
-      "parameters": {
-        "text": "HI",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agentTool",
-      "typeVersion": 3,
-      "position": [
-        -2336,
-        336
-      ],
-      "id": "4e1e27eb-93d9-409b-84a6-1c606904f67d",
-      "name": "Enrich"
     },
     {
       "parameters": {
@@ -341,22 +297,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1520,
-        -304
+        -1888,
+        -336
       ],
       "id": "70e0588c-ad0b-4fa9-872e-25e2b66575fd",
       "name": "If2"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        -1376,
-        -208
-      ],
-      "id": "906ab08a-4544-46fe-aefe-144b4031ebf3",
-      "name": "No Operation, do nothing"
     },
     {
       "parameters": {
@@ -365,8 +310,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2048,
-        16
+        -2416,
+        -16
       ],
       "id": "46877503-d9bc-449f-8fef-9a929a091f38",
       "name": "Edit Fields"
@@ -378,11 +323,68 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -1840,
-        16
+        -1744,
+        -240
+      ],
+      "id": "5328499e-574f-44cb-b0a8-69412cd30ac2",
+      "name": "Respond Error"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -2208,
+        -16
       ],
       "id": "b8a86d94-80a9-4d1e-8b15-ef325e4748a3",
-      "name": "Respond to Webhook"
+      "name": "Respond Result"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -2560,
+        448
+      ],
+      "id": "5e0bafc5-6416-4d81-b886-195396bdf9b6",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -2704,
+        448
+      ],
+      "id": "cd4e50a6-0ffd-4d51-b20a-e70afbf63b1a",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "DqU08GaOuTaPSUGi",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "HI",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        -2704,
+        288
+      ],
+      "id": "4e1e27eb-93d9-409b-84a6-1c606904f67d",
+      "name": "Enrich"
     }
   ],
   "pinData": {},
@@ -522,28 +524,6 @@
         ]
       ]
     },
-    "Google Gemini Chat Model1": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Enrich",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Simple Memory1": {
-      "ai_memory": [
-        [
-          {
-            "node": "Enrich",
-            "type": "ai_memory",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Send a message in Gmail": {
       "ai_tool": [
         [
@@ -577,17 +557,6 @@
         ]
       ]
     },
-    "Enrich": {
-      "ai_tool": [
-        [
-          {
-            "node": "generate content",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If2": {
       "main": [
         [
@@ -599,7 +568,7 @@
         ],
         [
           {
-            "node": "No Operation, do nothing",
+            "node": "Respond Error",
             "type": "main",
             "index": 0
           }
@@ -610,8 +579,41 @@
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Respond Result",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrich": {
+      "ai_tool": [
+        [
+          {
+            "node": "generate content",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Enrich",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Enrich",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -623,7 +625,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "134c598d-440d-44da-a960-3153a2eadc30",
+  "versionId": "9ec8ea33-70c2-47c3-8b37-b44306081f6b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "5a88e1ba34cacd53a7cb2710cfbb89d74b98fa60b214673b30dd15f2ad443a21"
