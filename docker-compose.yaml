@@ -1,18 +1,36 @@
 services:
   n8n:
-    build: .
+    image: docker.n8n.io/n8nio/n8n
     container_name: n8n
     restart: unless-stopped
     ports:
       - "5678:5678"
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./incoming_docs:/home/node/incoming_docs
-      - ./output_docs:/home/node/output_docs
+      - C:/n8n/incoming_docs:/home/node/incoming_docs
+      - C:/n8n/output_docs:/home/node/output_docs
     environment:
       - N8N_HOST=localhost
       - NODE_ENV=production
-      - WEBHOOK_URL=http://localhost:5678/
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_RUNNERS_MODE=external
+      - N8N_RUNNERS_AUTH_TOKEN=d4aed832c63413141fa632594abcd5a2a6d0c56d38364a4faf6b829bbf882fa6
+      - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0
+
+  task-runners:
+    build:
+      context: .
+      dockerfile: Dockerfile.runners
+    container_name: n8n-runners
+    restart: unless-stopped
+    environment:
+      - N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679
+      - N8N_RUNNERS_AUTH_TOKEN=d4aed832c63413141fa632594abcd5a2a6d0c56d38364a4faf6b829bbf882fa6
+    volumes:
+      - C:/n8n/incoming_docs:/home/node/incoming_docs
+      - C:/n8n/output_docs:/home/node/output_docs
+    depends_on:
+      - n8n
 
 volumes:
   n8n_data:

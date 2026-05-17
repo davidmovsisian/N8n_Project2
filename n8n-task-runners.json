@@ -1,0 +1,12 @@
+{
+  "task-runners": [
+    {
+      "runner-type": "python",
+      "env-overrides": {
+        "PYTHONPATH": "/opt/runners/task-runner-python:/opt/scripts",
+        "N8N_RUNNERS_STDLIB_ALLOW": "json,os,re,math,datetime,collections,itertools,functools,pathlib,typing",
+        "N8N_RUNNERS_EXTERNAL_ALLOW": "fitz,pymupdf,docx"
+      }
+    }
+  ]
+}
