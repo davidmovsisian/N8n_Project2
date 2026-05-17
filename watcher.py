@@ -1,9 +1,9 @@
-# watcher.py - run this on Windows, outside Docker
+# Watcher to monitor incoming_docs folder and send webhook on new file creation
 import time, requests, os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-WATCH_FOLDER = r"C:\n8n\incoming_docs"
+WATCH_FOLDER = r".\incoming_docs"
 WEBHOOK_URL = "http://localhost:5678/webhook-test/document-intake"
 
 class NewFileHandler(FileSystemEventHandler):
@@ -15,16 +15,13 @@ class NewFileHandler(FileSystemEventHandler):
         print(f"New file detected: {filename}")
         time.sleep(1)
 
-        with open(filepath, "rb") as f:
-            # Send as raw binary with filename in header
-            requests.post(
-                WEBHOOK_URL,
-                data=f.read(),
-                headers={
-                    "Content-Type": "application/octet-stream",
-                    "X-Filename": filename        # filename in custom header
-                }
-            )
+        requests.post(
+            WEBHOOK_URL,
+            headers={
+                "Content-Type": "application/octet-stream",
+                "X-Filename": filename
+            }
+        )
         print(f"Sent: {filename}")
 
 observer = Observer()
