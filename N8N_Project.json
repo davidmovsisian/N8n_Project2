@@ -373,6 +373,24 @@
       ],
       "id": "8f46949b-ccb4-4c8c-a491-f34c9b7ec659",
       "name": "proceed txt"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ (($env.ENRICH_SERVICE_BASE_URL || 'http://enrichment-service:8000').replace(/\\/$/, '')) + '/enrich' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -416,
+        96
+      ],
+      "id": "5d70e8c3-acfa-4aa1-9ea8-04715214c1a1",
+      "name": "Enrich analysys"
     }
   ],
   "pinData": {},
@@ -545,7 +563,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Enrich analysys",
             "type": "main",
             "index": 0
           }
@@ -592,6 +610,17 @@
             "node": "Merge",
             "type": "main",
             "index": 2
+          }
+        ]
+      ]
+    },
+    "Enrich analysys": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
