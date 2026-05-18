@@ -39,23 +39,10 @@
       "typeVersion": 2.3,
       "position": [
         -1712,
-        192
+        16
       ],
       "id": "d837b1ad-877c-480f-9166-43fd58e126b9",
       "name": "If"
-    },
-    {
-      "parameters": {
-        "numberInputs": 3
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        -992,
-        80
-      ],
-      "id": "1ec617fa-fab4-4837-935a-e01114140237",
-      "name": "Merge"
     },
     {
       "parameters": {
@@ -70,7 +57,7 @@
       "typeVersion": 2.1,
       "position": [
         -1936,
-        192
+        16
       ],
       "id": "7bdd5147-86b3-4ce9-a192-97f3f7d3ec08",
       "name": "Webhook",
@@ -78,13 +65,17 @@
     },
     {
       "parameters": {
-        "options": {}
+        "modelName": "models/gemini-flash-latest",
+        "options": {
+          "maxOutputTokens": 2048,
+          "temperature": 0
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        -816,
-        320
+        -1936,
+        640
       ],
       "id": "00544619-c4c8-4fda-8800-894b5db3f89d",
       "name": "Google Gemini Chat Model",
@@ -96,12 +87,16 @@
       }
     },
     {
-      "parameters": {},
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "1",
+        "contextWindowLength": "={{ $('Webhook').item.json.headers['x-filename'] }}"
+      },
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -688,
-        320
+        -912,
+        48
       ],
       "id": "d4a1d057-4141-48e8-ab43-7492fb4b0aac",
       "name": "Simple Memory"
@@ -134,115 +129,28 @@
       "typeVersion": 2.3,
       "position": [
         -1488,
-        0
+        -176
       ],
       "id": "da982617-8373-4602-abd4-721def98af8b",
       "name": "If1"
     },
     {
       "parameters": {
-        "language": "pythonNative",
-        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nfor item in _items:\n  item[\"json\"][\"my_new_field\"] = 1\nreturn _items"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1264,
-        -96
-      ],
-      "id": "86540ab8-9a23-47bf-bc80-03d7c04312c6",
-      "name": "procced pdf"
-    },
-    {
-      "parameters": {
-        "language": "pythonNative",
-        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nfor item in _items:\n  item[\"json\"][\"my_new_field\"] = 1\nreturn _items"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1264,
-        96
-      ],
-      "id": "a91fa4e9-6628-4191-bb54-b2b5aa44c870",
-      "name": "procceed docx"
-    },
-    {
-      "parameters": {
-        "options": {}
+        "promptType": "define",
+        "text": "=Analyze the following extracted text from a financial report and provide a structured JSON response. Do not include any markdown formatting, preamble, or postscript. Return ONLY the raw JSON object.\n\nRequirements:\n- company: full company name\n- classification: financial document type\n- summary: concise, maximum 200 characters\n- entities.people: list of key executives mentioned\n- entities.monetary_values: financial figures mentioned. list of objects with keys label -> Description of the line item (e.g., Total net sales), value -> Amount with currency symbol\n- entities.geographic_sales: list of sales per region, key -> region, value -> sales per region\n- entities.financial_ratios: list of financial ratios calculated from the financial statements(e.g., Net Profit Margin, Current Ratio, Debt-to-Equity). key -> name of financial ratio, value -> percentage or ratio value\n- sentiment.score: Positive, Neutral, or Negative\n- sentiment.rationale: concise, maximum 200 characters\n- action_items: exactly 3 concise items\n\nOutput JSON Schema:\n{\n  \"company\": \"string\",\n  \"classification\": \"string\",\n  \"summary\": \"string\",\n  \"entities\": {\n    \"people\": [\"string\"],\n    \"monetary_values\": [\n      {\n        \"label\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"geographic_sales\":[\n      {\n        \"region\": \"string\",\n        \"sales\": \"string\"\n      }\n    ],\n    \"financial_ratios\":[\n      {\n        \"ratio\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  },\n  \"sentiment\": {\n    \"score\": \"string\",\n    \"rationale\": \"string\"\n  },\n  \"action_items\": [\"string\"]\n}\n\nText:\n{{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert financial document extraction system. Be concise and follow the provided output schema exactly.\n"
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -640,
-        96
+        -992,
+        -176
       ],
       "id": "c45ac1d6-1ffc-4067-8dc6-fa45bd0f7533",
       "name": "generate content"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        -416,
-        528
-      ],
-      "id": "ec4bf8f0-e625-4da3-b448-a4129f8d3916",
-      "name": "Google Gemini Chat Model1",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "CJQQXoJvrHPNvnTO",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-      "typeVersion": 1.3,
-      "position": [
-        -288,
-        528
-      ],
-      "id": "b9dcffa0-6b67-4ee2-b576-1c5f95bea2ce",
-      "name": "Simple Memory1"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.gmailTool",
-      "typeVersion": 2.2,
-      "position": [
-        -560,
-        320
-      ],
-      "id": "08f50d4a-077a-4f25-be72-56f1075532c1",
-      "name": "Send a message in Gmail",
-      "webhookId": "3ee8f1c2-d5e3-40bf-a462-aa4208dc09e2",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "vufOQPTXHLcu1Jhn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "text": "HI",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agentTool",
-      "typeVersion": 3,
-      "position": [
-        -432,
-        320
-      ],
-      "id": "8ec9767a-6bab-4efa-864c-ee192675b272",
-      "name": "Enrich"
     },
     {
       "parameters": {
@@ -273,7 +181,7 @@
       "typeVersion": 2.3,
       "position": [
         -1488,
-        384
+        208
       ],
       "id": "fedccd0a-96ff-4555-b9b3-d6a4ce7851bb",
       "name": "If2"
@@ -285,21 +193,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -1264,
-        480
-      ],
-      "id": "a9162028-5c89-4bfe-9d0f-4ad91a3d13c5",
-      "name": "Respond to Webhook"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.5,
-      "position": [
-        272,
-        96
+        96,
+        224
       ],
       "id": "39c2ea58-a06b-4366-bc43-0ac2fff0fc92",
       "name": "Respond to Webhook1"
@@ -311,8 +206,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -176,
-        96
+        -128,
+        -160
       ],
       "id": "ca4f22ae-a1d1-4222-9899-b4b3d3cd4e3d",
       "name": "Edit Fields"
@@ -320,20 +215,169 @@
     {
       "parameters": {
         "operation": "write",
+        "fileName": "/home/node/output_docs/test.txt",
+        "dataPropertyName": "=data {{ $('generate content').item.json.output }}",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        48,
-        96
+        96,
+        32
       ],
       "id": "3af54f3a-2076-40c2-b24b-c0e77b5513d7",
       "name": "Read/Write Files from Disk"
     },
     {
       "parameters": {
-        "operation": "update",
+        "language": "pythonNative",
+        "pythonCode": "from pathlib import Path\n\nfile_path = f'/home/node/incoming_docs/{_items[0][\"json\"][\"headers\"][\"x-filename\"]}'\nfile_content = Path(file_path).read_text()\n\n_items[0][\"json\"][\"text\"] = file_content\nreturn _items"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1264,
+        16
+      ],
+      "id": "8f46949b-ccb4-4c8c-a491-f34c9b7ec659",
+      "name": "proceed txt"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "import fitz\n\nfile_path = f'/home/node/incoming_docs/{_items[0][\"json\"][\"headers\"][\"x-filename\"]}'\n\nwith fitz.open(file_path) as doc:\n  text = \"\\n\".join([page.get_text().strip() for page in doc])\n  \n_items[0][\"json\"][\"text\"] = text\n  \nreturn _items"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1264,
+        -368
+      ],
+      "id": "86540ab8-9a23-47bf-bc80-03d7c04312c6",
+      "name": "procced pdf",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "text": "murder",
+        "guardrails": {
+          "topicalAlignment": {
+            "value": {
+              "threshold": 0.7,
+              "prompt": "You are a financial controller AI. \n\nSCOPE:\n- The text MUST contain evidence of earnings summaries, budget proposals, expense reports.\n- To be considered ON-TOPIC, the text must explicitly contain or directly reference one of the following financial artifacts:\n   Earnings Summaries: Revenue reports, profit/loss statements, quarterly/annual financial results, or income summaries.\n   Budget Proposals: Projected departmental spend, resource allocation requests, or future budget drafts with line-item estimates.\n   Expense Reports: Detailed lists of employee reimbursements, corporate card statements, or compiled business expenditures.\n- The text is OFF-TOPIC if it falls into any of the following categories, even if it mentions money:\n    General Transactions/Invoices: Individual subscription renewals, standalone utility bills, one-off payment receipts, or attached invoices that are not part of a broader expense report or budget proposal.\n    Marketing & Newsletters: Industry updates, promotional offers, or vendor pitches without an active, authorized internal transaction.\n    Personal Conversations: Casual team chats, personal loan discussions, or non-business financial chatter.\n\nDetermine if the text stays within the defined business scope. Flag any content\nthat strays from the allowed topics.\n"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        -1936,
+        1184
+      ],
+      "id": "8d8a177a-9c6a-4061-a99b-0c26ee393f06",
+      "name": "Guardrails"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -1264,
+        208
+      ],
+      "id": "a9162028-5c89-4bfe-9d0f-4ad91a3d13c5",
+      "name": "Error Respond"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxOutputTokens": 500
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1872,
+        1408
+      ],
+      "id": "c555c9ad-923d-4769-bfcd-65b88e3c7aa8",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CJQQXoJvrHPNvnTO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"company\": \"string\",\n  \"classification\": \"string\",\n  \"summary\": \"string\",\n  \"entities\": {\n    \"people\": [\"string\"],\n    \"monetary_values\": [\n      {\n        \"label\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"geographic_sales\":[\n      {\n        \"region\": \"string\",\n        \"sales\": \"string\"\n      }\n    ],\n    \"financial_ratios\":[\n      {\n        \"ratio\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  },\n  \"sentiment\": {\n    \"score\": \"string\",\n    \"rationale\": \"string\"\n  },\n  \"action_items\": [\"string\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -784,
+        48
+      ],
+      "id": "31f471e4-eaf7-4836-8148-7d9bea1036ac",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "from docx import Document\n\nfile_path = f'/home/node/incoming_docs/{_items[0][\"json\"][\"headers\"][\"x-filename\"]}'\n\ndoc = Document(file_path)\ntext = \"\\n\".join(paragraph.text.strip() for paragraph in doc.paragraphs)\n\n_items[0][\"json\"][\"text\"] = text\nreturn _items"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1264,
+        -176
+      ],
+      "id": "a91fa4e9-6628-4191-bb54-b2b5aa44c870",
+      "name": "procceed docx",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -352,
+        -160
+      ],
+      "id": "41303783-18d1-4f6a-8db8-8af757c3b98a",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        -352
+      ],
+      "id": "9035a8f8-370d-4a79-970f-43f6d3933806",
+      "name": "Send a message",
+      "webhookId": "16090bfc-0a06-4ef9-8200-c7c5e32f1a80",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vufOQPTXHLcu1Jhn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
         "documentId": {
           "__rl": true,
           "mode": "list",
@@ -345,14 +389,14 @@
           "value": ""
         }
       },
-      "type": "n8n-nodes-base.googleSheetsTool",
+      "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -144,
-        320
+        96,
+        -160
       ],
-      "id": "e4aa8ad5-1f29-4201-b8d0-7480dbf73a26",
-      "name": "Update row in sheet in Google Sheets",
+      "id": "c7daee39-2acb-48ab-8887-73d719a811f0",
+      "name": "Append row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "BIHG4cDatFdtHFy4",
@@ -362,34 +406,70 @@
     },
     {
       "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5",
+          "mode": "list",
+          "cachedResultName": "gpt-5"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1040,
+        48
+      ],
+      "id": "8b1b960f-01cf-4b72-97d3-c3cb81858e13",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "tbsMD40OjTTU6Gwd",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        -1936,
+        432
+      ],
+      "id": "0204f693-934f-4581-b63b-b8a94e3de210",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1936,
+        848
+      ],
+      "id": "0cbbbd49-4e66-4d7a-96a3-75beede5afd7",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
         "language": "pythonNative",
-        "pythonCode": "file_path = 'home/node/incoming_docs/_items[0][\"json\"][\"headers\"][\"x-filename\"]'\n\nwith open(file_path, 'r') as file:\n    file_content = file.read()\n\nprint(file_content)"
+        "pythonCode": "# enriches the LLM output with business-specific metadata. Calls Flask server to get the enrichment data.\n# Flow\n# 1. call /health endpoint service.\n# 2. if helthy call /enrich, /categories and /sensitivity endpoints\n  "
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1264,
-        288
+        -576,
+        -32
       ],
-      "id": "8f46949b-ccb4-4c8c-a491-f34c9b7ec659",
-      "name": "proceed txt"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "={{ (($env.ENRICH_SERVICE_BASE_URL || 'http://enrichment-service:8000').replace(/\\/$/, '')) + '/enrich' }}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ $json }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -416,
-        96
-      ],
-      "id": "5d70e8c3-acfa-4aa1-9ea8-04715214c1a1",
+      "id": "fd1b9e5f-e918-47c6-9947-e838b8e4b4e1",
       "name": "Enrich analysys"
     }
   ],
@@ -413,17 +493,6 @@
         ]
       ]
     },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "generate content",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Webhook": {
       "main": [
         [
@@ -437,13 +506,7 @@
     },
     "Google Gemini Chat Model": {
       "ai_languageModel": [
-        [
-          {
-            "node": "generate content",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Simple Memory": {
@@ -475,72 +538,6 @@
         ]
       ]
     },
-    "procced pdf": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "procceed docx": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Google Gemini Chat Model1": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Enrich",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Simple Memory1": {
-      "ai_memory": [
-        [
-          {
-            "node": "Enrich",
-            "type": "ai_memory",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Send a message in Gmail": {
-      "ai_tool": [
-        [
-          {
-            "node": "generate content",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enrich": {
-      "ai_tool": [
-        [
-          {
-            "node": "generate content",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If2": {
       "main": [
         [
@@ -552,7 +549,7 @@
         ],
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Error Respond",
             "type": "main",
             "index": 0
           }
@@ -562,6 +559,11 @@
     "generate content": {
       "main": [
         [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Enrich analysys",
             "type": "main",
@@ -574,16 +576,20 @@
       "main": [
         [
           {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "Read/Write Files from Disk",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Read/Write Files from Disk": {
-      "main": [
-        [
+          },
           {
             "node": "Respond to Webhook1",
             "type": "main",
@@ -592,24 +598,116 @@
         ]
       ]
     },
-    "Update row in sheet in Google Sheets": {
-      "ai_tool": [
-        [
-          {
-            "node": "generate content",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
+    "Read/Write Files from Disk": {
+      "main": [
+        []
       ]
     },
     "proceed txt": {
       "main": [
         [
           {
+            "node": "generate content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "procced pdf": {
+      "main": [
+        [
+          {
+            "node": "generate content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrails": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Guardrails",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "generate content",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "procceed docx": {
+      "main": [
+        [
+          {
+            "node": "generate content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "generate content",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Enrich analysys": {
+      "main": [
+        [
+          {
             "node": "Merge",
             "type": "main",
-            "index": 2
+            "index": 1
           }
         ]
       ]
@@ -631,7 +729,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "ec158de0-7ffb-47b4-a40d-39d1d38c7fe1",
+  "versionId": "178d942c-e641-429f-b321-fd81aecfa6b6",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "5d541fa8556957c5e7aa4cdc845eb209a50ae717a1396d53fe26d9f9adeecc6d"
