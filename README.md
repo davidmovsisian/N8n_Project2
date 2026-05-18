@@ -31,6 +31,7 @@ The workflow (`N8N_Project.json`) now contains an HTTP Request node named exactl
 
 `docker-compose.yaml` now includes an `enrichment-service` container and sets:
 - `ENRICH_SERVICE_BASE_URL=http://enrichment-service:8000`
+- The enrichment service container is built from `Dockerfile.enrichment`
 
 ## Tests
 
