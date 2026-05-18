@@ -16,6 +16,9 @@ services:
       - N8N_RUNNERS_MODE=external
       - N8N_RUNNERS_AUTH_TOKEN=d4aed832c63413141fa632594abcd5a2a6d0c56d38364a4faf6b829bbf882fa6
       - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0
+      - ENRICH_SERVICE_BASE_URL=http://enrichment-service:8000
+    depends_on:
+      - enrichment-service
 
   task-runners:
     build:
@@ -31,6 +34,15 @@ services:
       - ./output_docs:/home/node/output_docs
     depends_on:
       - n8n
+
+  enrichment-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.enrichment
+    container_name: enrichment-service
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
 
 volumes:
   n8n_data:

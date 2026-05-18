@@ -711,6 +711,17 @@
           }
         ]
       ]
+    },
+    "Enrich analysys": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
