@@ -5,6 +5,7 @@ import uuid
 from typing import Any
 
 from flask import Flask, jsonify, request
+import json
 
 app = Flask(__name__)
 
@@ -146,6 +147,8 @@ def sensitivity():
 @app.post("/enrich")
 def enrich():
     payload = request.get_json(silent=True) or {}
+    json_payload = json.dumps(payload, indent=2)
+    print(f"Received payload:\n{json_payload}")
     return jsonify(enrich_payload(payload))
 
 

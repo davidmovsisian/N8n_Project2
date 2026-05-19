@@ -38,10 +38,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1712,
-        16
+        -864,
+        736
       ],
-      "id": "d837b1ad-877c-480f-9166-43fd58e126b9",
+      "id": "ec0c0fbe-4ed3-4745-895b-8e2b899c90fc",
       "name": "If"
     },
     {
@@ -56,35 +56,12 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -1936,
-        16
+        -1312,
+        736
       ],
-      "id": "7bdd5147-86b3-4ce9-a192-97f3f7d3ec08",
+      "id": "29cebe5c-c044-4b3e-b4f3-57f85f6cb966",
       "name": "Webhook",
       "webhookId": "bc04ec10-5db2-47cc-adc8-2c858e1dfaae"
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-flash-latest",
-        "options": {
-          "maxOutputTokens": 2048,
-          "temperature": 0
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        -1936,
-        640
-      ],
-      "id": "00544619-c4c8-4fda-8800-894b5db3f89d",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "CJQQXoJvrHPNvnTO",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
     },
     {
       "parameters": {
@@ -95,10 +72,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -912,
-        48
+        288,
+        732
       ],
-      "id": "d4a1d057-4141-48e8-ab43-7492fb4b0aac",
+      "id": "2fb0cb68-fd17-4ec5-9225-c15dc9f70f0f",
       "name": "Simple Memory"
     },
     {
@@ -128,29 +105,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1488,
-        -176
+        -640,
+        516
       ],
-      "id": "da982617-8373-4602-abd4-721def98af8b",
+      "id": "886892e7-4a27-42f3-80e8-f20d7cd199b8",
       "name": "If1"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Analyze the following extracted text from a financial report and provide a structured JSON response. Do not include any markdown formatting, preamble, or postscript. Return ONLY the raw JSON object.\n\nRequirements:\n- company: full company name\n- classification: financial document type\n- summary: concise, maximum 200 characters\n- entities.people: list of key executives mentioned\n- entities.monetary_values: financial figures mentioned. list of objects with keys label -> Description of the line item (e.g., Total net sales), value -> Amount with currency symbol\n- entities.geographic_sales: list of sales per region, key -> region, value -> sales per region\n- entities.financial_ratios: list of financial ratios calculated from the financial statements(e.g., Net Profit Margin, Current Ratio, Debt-to-Equity). key -> name of financial ratio, value -> percentage or ratio value\n- sentiment.score: Positive, Neutral, or Negative\n- sentiment.rationale: concise, maximum 200 characters\n- action_items: exactly 3 concise items\n\nOutput JSON Schema:\n{\n  \"company\": \"string\",\n  \"classification\": \"string\",\n  \"summary\": \"string\",\n  \"entities\": {\n    \"people\": [\"string\"],\n    \"monetary_values\": [\n      {\n        \"label\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"geographic_sales\":[\n      {\n        \"region\": \"string\",\n        \"sales\": \"string\"\n      }\n    ],\n    \"financial_ratios\":[\n      {\n        \"ratio\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  },\n  \"sentiment\": {\n    \"score\": \"string\",\n    \"rationale\": \"string\"\n  },\n  \"action_items\": [\"string\"]\n}\n\nText:\n{{ $json.text }}",
-        "hasOutputParser": true,
-        "options": {
-          "systemMessage": "You are an expert financial document extraction system. Be concise and follow the provided output schema exactly.\n"
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3.1,
-      "position": [
-        -992,
-        -176
-      ],
-      "id": "c45ac1d6-1ffc-4067-8dc6-fa45bd0f7533",
-      "name": "generate content"
     },
     {
       "parameters": {
@@ -180,53 +139,88 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1488,
-        208
+        -640,
+        956
       ],
-      "id": "fedccd0a-96ff-4555-b9b3-d6a4ce7851bb",
+      "id": "b7042c39-0d5d-4599-b75e-ebe4230b2dbe",
       "name": "If2"
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.5,
-      "position": [
-        96,
-        224
-      ],
-      "id": "39c2ea58-a06b-4366-bc43-0ac2fff0fc92",
-      "name": "Respond to Webhook1"
-    },
-    {
-      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f7a98953-ebfd-4019-9018-fd5f7466ecbb",
+              "name": "=document_id",
+              "value": "={{ $json.metadata.document_id }}",
+              "type": "string"
+            },
+            {
+              "id": "90954020-e66b-46d1-afdd-93b85854c7df",
+              "name": "=filename",
+              "value": "={{ $('Webhook').item.json.headers['x-filename'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a2dca070-eeab-407a-be7d-96805aba930d",
+              "name": "=processed_at",
+              "value": "={{ $json.metadata.timestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "5ea0d46f-a61c-49b0-8a3b-893ab0c69fcd",
+              "name": "=classification",
+              "value": "={{ $json.output.classification }}",
+              "type": "string"
+            },
+            {
+              "id": "9cc2fee8-bf58-4c9e-86a7-b3124f107440",
+              "name": "=sentiment",
+              "value": "={{ $json.output.sentiment.rationale }}",
+              "type": "string"
+            },
+            {
+              "id": "a61159e6-499f-4623-b53d-956c45ffaf56",
+              "name": "=confidence_score",
+              "value": "={{ $json.metadata.confidence_adjustment }}",
+              "type": "number"
+            },
+            {
+              "id": "d366a2f5-ac51-4677-af30-93981bb71a35",
+              "name": "=summary",
+              "value": "={{ $json.output.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "a82076ad-fff6-4792-96f2-67d169f51777",
+              "name": "=routing_tag",
+              "value": "={{ $json.metadata.routing_tags }}",
+              "type": "array"
+            },
+            {
+              "id": "dac8e51c-5657-48d3-9486-a13cb9d6a70f",
+              "name": "=sensitivity",
+              "value": "={{ $json.metadata.sensitivity }}",
+              "type": "string"
+            },
+            {
+              "id": "83b34702-efd6-4d30-bc20-1bb7def05f89",
+              "name": "=action_items",
+              "value": "= {{ ($json.output.action_items) }}",
+              "type": "string"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -128,
-        -160
+        1040,
+        416
       ],
-      "id": "ca4f22ae-a1d1-4222-9899-b4b3d3cd4e3d",
+      "id": "57c09cb0-2904-49a6-a514-7cacc8b919a0",
       "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "operation": "write",
-        "fileName": "/home/node/output_docs/test.txt",
-        "dataPropertyName": "=data {{ $('generate content').item.json.output }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        96,
-        32
-      ],
-      "id": "3af54f3a-2076-40c2-b24b-c0e77b5513d7",
-      "name": "Read/Write Files from Disk"
     },
     {
       "parameters": {
@@ -236,10 +230,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1264,
-        16
+        -416,
+        856
       ],
-      "id": "8f46949b-ccb4-4c8c-a491-f34c9b7ec659",
+      "id": "c0483b35-8a3f-4dcf-94da-a08ccdf7be64",
       "name": "proceed txt"
     },
     {
@@ -250,16 +244,16 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1264,
-        -368
+        -416,
+        472
       ],
-      "id": "86540ab8-9a23-47bf-bc80-03d7c04312c6",
+      "id": "dc04bb47-2a30-4fa9-a78a-7b0697aae6bc",
       "name": "procced pdf",
       "alwaysOutputData": false
     },
     {
       "parameters": {
-        "text": "murder",
+        "text": "={{ $json.text }}",
         "guardrails": {
           "topicalAlignment": {
             "value": {
@@ -272,10 +266,10 @@
       "type": "@n8n/n8n-nodes-langchain.guardrails",
       "typeVersion": 2,
       "position": [
-        -1936,
-        1184
+        -192,
+        664
       ],
-      "id": "8d8a177a-9c6a-4061-a99b-0c26ee393f06",
+      "id": "dbe1caad-f2b9-42d3-ae10-9747b59f496c",
       "name": "Guardrails"
     },
     {
@@ -285,32 +279,11 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -1264,
-        208
+        344,
+        980
       ],
-      "id": "a9162028-5c89-4bfe-9d0f-4ad91a3d13c5",
+      "id": "47edf15f-e093-497e-a8a3-086e9e09c2e3",
       "name": "Error Respond"
-    },
-    {
-      "parameters": {
-        "options": {
-          "maxOutputTokens": 500
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        -1872,
-        1408
-      ],
-      "id": "c555c9ad-923d-4769-bfcd-65b88e3c7aa8",
-      "name": "Google Gemini Chat Model2",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "CJQQXoJvrHPNvnTO",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
     },
     {
       "parameters": {
@@ -320,10 +293,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -784,
-        48
+        544,
+        732
       ],
-      "id": "31f471e4-eaf7-4836-8148-7d9bea1036ac",
+      "id": "faf2f9a8-28cd-4e65-b7ce-6ffbf22768e9",
       "name": "Structured Output Parser"
     },
     {
@@ -334,43 +307,39 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1264,
-        -176
+        -416,
+        664
       ],
-      "id": "a91fa4e9-6628-4191-bb54-b2b5aa44c870",
+      "id": "5afba168-2da3-46e2-bbaf-96a323b8698e",
       "name": "procceed docx",
       "alwaysOutputData": false
     },
     {
       "parameters": {
-        "mode": "combine",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        -352,
-        -160
-      ],
-      "id": "41303783-18d1-4f6a-8db8-8af757c3b98a",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "options": {}
+        "sendTo": "={{ $('Configure').item.json.recipient }}",
+        "subject": "={{ $('Enrich content').item.json.output.classification + ', ' + $('Enrich content').item.json.output.company }}",
+        "emailType": "text",
+        "message": "={{'Link to Google Sheet: ' }}{{ $('Configure').item.json['google sheet link'] }}",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        96,
-        -352
+        1664,
+        528
       ],
-      "id": "9035a8f8-370d-4a79-970f-43f6d3933806",
+      "id": "45fa4ebd-2b1b-43fa-95fe-50bf728c1240",
       "name": "Send a message",
       "webhookId": "16090bfc-0a06-4ef9-8200-c7c5e32f1a80",
       "credentials": {
         "gmailOAuth2": {
-          "id": "vufOQPTXHLcu1Jhn",
+          "id": "IfaNpmuAGRZuMSX8",
           "name": "Gmail account"
         }
       }
@@ -380,26 +349,141 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
+          "value": "1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE",
           "mode": "list",
-          "value": ""
+          "cachedResultName": "report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
+          "value": "gid=0",
           "mode": "list",
-          "value": ""
-        }
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "document_id": "={{ $json.document_id }}",
+            "filename": "={{ $json.filename }}",
+            "processed_at": "={{ $json.processed_at }}",
+            "classification": "={{ $json.classification }}",
+            "sentiment": "={{ $json.sentiment }}",
+            "confidence_score": "={{ $json.confidence_score }}",
+            "summary": "={{ $json.summary }}",
+            "routing_tag": "={{ $json.routing_tag.join(',') }}",
+            "sensitivity": "={{ $json.sensitivity }}",
+            "action_items": "={{ $json.action_items }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "document_id",
+              "displayName": "document_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processed_at",
+              "displayName": "processed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "classification",
+              "displayName": "classification",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sentiment",
+              "displayName": "sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence_score",
+              "displayName": "confidence_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "routing_tag",
+              "displayName": "routing_tag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sensitivity",
+              "displayName": "sensitivity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "action_items",
+              "displayName": "action_items",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
       },
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        96,
-        -160
+        1328,
+        416
       ],
-      "id": "c7daee39-2acb-48ab-8887-73d719a811f0",
+      "id": "f4cbe6ab-da29-4b7c-b255-338d69d8e19a",
       "name": "Append row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "BIHG4cDatFdtHFy4",
+          "id": "MWmw5eKqy4fVuh3I",
           "name": "Google Sheets account"
         }
       }
@@ -418,14 +502,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -1040,
-        48
+        160,
+        732
       ],
-      "id": "8b1b960f-01cf-4b72-97d3-c3cb81858e13",
+      "id": "26700e97-e976-46bd-917a-0b4c5ac32cbb",
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
-          "id": "tbsMD40OjTTU6Gwd",
+          "id": "RXE1BtyzDOmcLS5A",
           "name": "OpenAI account"
         }
       }
@@ -435,42 +519,180 @@
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1.1,
       "position": [
-        -1936,
-        432
+        416,
+        732
       ],
-      "id": "0204f693-934f-4581-b63b-b8a94e3de210",
+      "id": "3620eff1-e17a-414b-8c2b-b4d8870212a2",
       "name": "Think"
     },
     {
       "parameters": {
         "assignments": {
-          "assignments": []
+          "assignments": [
+            {
+              "id": "1132df71-46a4-481e-b5e2-d9913b5f8e13",
+              "name": "google sheet link",
+              "value": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit?gid=0#gid=0",
+              "type": "string"
+            },
+            {
+              "id": "ff7b07b2-c375-4b56-ac89-d51f80e8f78a",
+              "name": "recipient",
+              "value": "movsisian.david@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "f86ad24f-8ee2-4a0c-be01-9d02e35d49c9",
+              "name": "output file name",
+              "value": "={{ $json.headers['x-filename'].replace('pdf','html') }}",
+              "type": "string"
+            }
+          ]
         },
         "includeOtherFields": true,
+        "include": "=all",
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1936,
-        848
+        -1088,
+        736
       ],
-      "id": "0cbbbd49-4e66-4d7a-96a3-75beede5afd7",
-      "name": "Edit Fields1"
+      "id": "9629b227-d052-4747-8f07-dd0fd51cf2e0",
+      "name": "Configure"
     },
     {
       "parameters": {
-        "language": "pythonNative",
-        "pythonCode": "# enriches the LLM output with business-specific metadata. Calls Flask server to get the enrichment data.\n# Flow\n# 1. call /health endpoint service.\n# 2. if helthy call /enrich, /categories and /sensitivity endpoints\n  "
+        "operation": "html",
+        "options": {
+          "fileName": "={{ $('Configure').item.json['output file name'] }}"
+        }
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
       "position": [
-        -576,
-        -32
+        1328,
+        712
       ],
-      "id": "fd1b9e5f-e918-47c6-9947-e838b8e4b4e1",
-      "name": "Enrich analysys"
+      "id": "4805dc4f-722a-4c17-b697-7388da789653",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/output_docs/{{$('Configure').item.json['output file name']}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1664,
+        816
+      ],
+      "id": "de7eb65e-0713-4136-bd8b-a8bef17b042a",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1048,
+        936
+      ],
+      "id": "9f61c1a3-ed74-4074-afb2-006cacbe6bab",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "RXE1BtyzDOmcLS5A",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -120,
+        888
+      ],
+      "id": "477e8df5-bc22-49c8-902c-e57285e2fe12",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "RXE1BtyzDOmcLS5A",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following extracted text from a financial report and provide a structured JSON response. Do not include any markdown formatting, preamble, or postscript. Return ONLY the raw JSON object.\n\nRequirements:\n- company: full company name\n- classification: financial document type\n- summary: concise, maximum 200 characters\n- entities.people: list of key executives mentioned\n- entities.monetary_values: financial figures mentioned. list of objects with keys label -> Description of the line item (e.g., Total net sales), value -> Amount with currency symbol\n- entities.geographic_sales: list of sales per region, key -> region, value -> sales per region\n- entities.financial_ratios: list of financial ratios calculated from the financial statements(e.g., Net Profit Margin, Current Ratio, Debt-to-Equity). key -> name of financial ratio, value -> percentage or ratio value\n- sentiment.score: Positive, Neutral, or Negative\n- sentiment.rationale: concise, maximum 200 characters\n- action_items: exactly 3 concise items\n\nOutput JSON Schema:\n{\n  \"company\": \"string\",\n  \"classification\": \"string\",\n  \"summary\": \"string\",\n  \"entities\": {\n    \"people\": [\"string\"],\n    \"monetary_values\": [\n      {\n        \"label\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"geographic_sales\":[\n      {\n        \"region\": \"string\",\n        \"sales\": \"string\"\n      }\n    ],\n    \"financial_ratios\":[\n      {\n        \"ratio\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  },\n  \"sentiment\": {\n    \"score\": \"string\",\n    \"rationale\": \"string\"\n  },\n  \"action_items\": [\"string\"]\n}\n\nText:\n{{ $json.guardrailsInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert financial document extraction system. Be concise and follow the provided output schema exactly.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        280,
+        508
+      ],
+      "id": "74b082ba-7745-412d-adff-a096e1da7bd2",
+      "name": "Analyze document"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://enrichment-service:8000/enrich",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        752,
+        612
+      ],
+      "id": "31bc71f2-d129-49c2-b7be-7f5aff7fe8ee",
+      "name": "Enrich content"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Role:\nYou are a financial analyst. Given the following document data, produce a comprehensive analysis. Use clear headings, bullet points, and tables where appropriate to ensure the output is professional and easy to scan.\n\nInstractions:\n1. **Executive Summary** – 3–4 sentence overview\n2. **Key Financial Highlights** – bullet points on top metrics\n3. **Geographic Breakdown** – brief narrative on sales by region  \n4. **Risks & Watch Items** – based on the action items\n5. **Sentiment** – overall tone and rationale\n\nDocument data:\n{{ $json.output.toJsonString()}}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        976,
+        712
+      ],
+      "id": "666d2aa9-1324-489e-bb0f-5f45eba18f8f",
+      "name": "Summary"
     }
   ],
   "pinData": {},
@@ -497,23 +719,18 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "Configure",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        []
-      ]
-    },
     "Simple Memory": {
       "ai_memory": [
         [
           {
-            "node": "generate content",
+            "node": "Analyze document",
             "type": "ai_memory",
             "index": 0
           }
@@ -556,58 +773,22 @@
         ]
       ]
     },
-    "generate content": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Enrich analysys",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Edit Fields": {
       "main": [
         [
           {
-            "node": "Send a message",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "Append row in sheet",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Read/Write Files from Disk",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Respond to Webhook1",
             "type": "main",
             "index": 0
           }
         ]
-      ]
-    },
-    "Read/Write Files from Disk": {
-      "main": [
-        []
       ]
     },
     "proceed txt": {
       "main": [
         [
           {
-            "node": "generate content",
+            "node": "Guardrails",
             "type": "main",
             "index": 0
           }
@@ -618,25 +799,8 @@
       "main": [
         [
           {
-            "node": "generate content",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Guardrails": {
-      "main": [
-        [],
-        []
-      ]
-    },
-    "Google Gemini Chat Model2": {
-      "ai_languageModel": [
-        [
-          {
             "node": "Guardrails",
-            "type": "ai_languageModel",
+            "type": "main",
             "index": 0
           }
         ]
@@ -646,7 +810,7 @@
       "ai_outputParser": [
         [
           {
-            "node": "generate content",
+            "node": "Analyze document",
             "type": "ai_outputParser",
             "index": 0
           }
@@ -657,39 +821,18 @@
       "main": [
         [
           {
-            "node": "generate content",
+            "node": "Guardrails",
             "type": "main",
             "index": 0
           }
         ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Send a message": {
-      "main": [
-        []
-      ]
-    },
-    "Append row in sheet": {
-      "main": [
-        []
       ]
     },
     "OpenAI Chat Model": {
       "ai_languageModel": [
         [
           {
-            "node": "generate content",
+            "node": "Analyze document",
             "type": "ai_languageModel",
             "index": 0
           }
@@ -698,25 +841,114 @@
     },
     "Think": {
       "ai_tool": [
-        []
-      ]
-    },
-    "Enrich analysys": {
-      "main": [
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
+            "node": "Analyze document",
+            "type": "ai_tool",
+            "index": 0
           }
         ]
       ]
     },
-    "Enrich analysys": {
+    "Configure": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summary",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrails": {
+      "main": [
+        [
+          {
+            "node": "Analyze document",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Guardrails",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze document": {
+      "main": [
+        [
+          {
+            "node": "Enrich content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrich content": {
       "main": [
         [
           {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summary": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
             "type": "main",
             "index": 0
           }
@@ -729,11 +961,11 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "178d942c-e641-429f-b321-fd81aecfa6b6",
+  "versionId": "8caffb03-e179-48c5-aeb8-5eba11672c82",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "5d541fa8556957c5e7aa4cdc845eb209a50ae717a1396d53fe26d9f9adeecc6d"
+    "instanceId": "43fecddcc118a36e4267d9af84d44d0b8a3782f3b7c005e53f40a044236ad340"
   },
-  "id": "mjXNi9sODlk0kNQn",
+  "id": "AATJz7dIm9Sq25aB",
   "tags": []
 }
