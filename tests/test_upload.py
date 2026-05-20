@@ -1,14 +1,27 @@
 import io
-import json
+import os
+import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
 
-from src.enrichment_service import app
+from src import enrichment_service
+
+app = enrichment_service.app
 
 
 class UploadFileTests(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.incoming_dir = self.tmpdir.name
+        self.incoming_patch = patch.object(
+            enrichment_service, "INCOMING_DOCS_DIR", self.incoming_dir
+        )
+        self.incoming_patch.start()
+
+    def tearDown(self):
+        self.incoming_patch.stop()
+        self.tmpdir.cleanup()
 
     # ------------------------------------------------------------------
     # GET / — UI is served
@@ -75,6 +88,28 @@ class UploadFileTests(unittest.TestCase):
         self.assertEqual(body["status"], "ok")
         self.assertEqual(body["filename"], "document.pdf")
         self.assertEqual(body["result"], webhook_payload)
+        saved_file = os.path.join(self.incoming_dir, "document.pdf")
+        self.assertTrue(os.path.exists(saved_file))
+
+    def test_upload_calls_webhook_with_filename_only(self):
+        mock_resp = MagicMock()
+        mock_resp.headers = {"Content-Type": "application/json"}
+        mock_resp.json.return_value = {"ok": True}
+        mock_resp.raise_for_status.return_value = None
+
+        with patch("src.enrichment_service.http_client.post", return_value=mock_resp) as mock_post:
+            data = {"file": (io.BytesIO(b"%PDF content"), "document.pdf")}
+            response = self.client.post(
+                "/upload-file",
+                data=data,
+                content_type="multipart/form-data",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        _, kwargs = mock_post.call_args
+        self.assertEqual(kwargs.get("headers"), {"X-Filename": "document.pdf"})
+        self.assertNotIn("json", kwargs)
+        self.assertNotIn("files", kwargs)
 
     # ------------------------------------------------------------------
     # POST /upload-file — webhook success (HTML response)

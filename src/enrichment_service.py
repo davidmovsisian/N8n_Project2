@@ -17,6 +17,7 @@ app = Flask(__name__, template_folder="templates")
 # ---------------------------------------------------------------------------
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt", ".png", ".jpg", ".jpeg"}
+INCOMING_DOCS_DIR: str = os.environ.get("INCOMING_DOCS_DIR", "/home/node/incoming_docs")
 N8N_WEBHOOK_URL: str = os.environ.get(
     "N8N_WEBHOOK_URL",
     "http://localhost:5678/webhook/document-intake",
@@ -185,17 +186,25 @@ def upload_file():
         return jsonify({"error": "No file selected"}), 400
 
     filename = secure_filename(f.filename)
+    if not filename:
+        return jsonify({"error": "Invalid file name"}), 400
+
     ext = os.path.splitext(filename)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         return jsonify({"error": f"Unsupported file type: {ext}"}), 415
 
-    file_bytes = f.read()
-    content_type = f.content_type or "application/octet-stream"
+    os.makedirs(INCOMING_DOCS_DIR, exist_ok=True)
+    save_path = os.path.join(INCOMING_DOCS_DIR, filename)
+
+    try:
+        f.save(save_path)
+    except OSError:
+        return jsonify({"error": "Failed to save uploaded file"}), 500
 
     try:
         webhook_response = http_client.post(
             N8N_WEBHOOK_URL,
-            files={"file": (filename, file_bytes, content_type)},
+            headers={"X-Filename": filename},
             timeout=N8N_TIMEOUT,
         )
         webhook_response.raise_for_status()
