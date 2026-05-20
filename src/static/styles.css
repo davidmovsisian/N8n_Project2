@@ -64,6 +64,8 @@ body {
 
 .drop-zone {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   align-items: center;
   justify-content: center;
   min-height: 180px;
@@ -77,10 +79,18 @@ body {
   color: #475467;
 }
 
-.drop-zone.dragover {
+.drop-zone.dragover,
+.drop-zone.drag-over {
   border-color: #0a4d8c;
   background: #eef6ff;
   color: #0a4d8c;
+}
+
+.selected-file {
+  margin-top: 8px;
+  color: #475467;
+  font-size: 14px;
+  min-height: 20px;
 }
 
 .actions {
