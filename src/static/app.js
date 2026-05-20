@@ -7,11 +7,8 @@ const emailInput   = document.getElementById('email-input');
 const statusEl     = document.getElementById('status');
 const previewIframe = document.getElementById('preview-iframe');
 const previewJson  = document.getElementById('preview-json');
-const toggleRaw    = document.getElementById('toggle-raw');
 
 let currentFile = null;
-let rawJson = '';
-let showingRaw = false;
 
 // --- file selection ---
 function setFile(file) {
@@ -21,7 +18,11 @@ function setFile(file) {
 }
 
 fileInput.addEventListener('change', () => setFile(fileInput.files[0] || null));
-chooseFileBtn.addEventListener('click', () => fileInput.click());
+chooseFileBtn.addEventListener('click', e => {
+  e.preventDefault();
+  e.stopPropagation();
+  fileInput.click();
+});
 
 // --- drag and drop ---
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
@@ -33,7 +34,9 @@ dropZone.addEventListener('drop', e => {
   if (file) setFile(file);
 });
 dropZone.addEventListener('click', e => {
-  if (e.target.tagName !== 'LABEL') fileInput.click();
+  e.preventDefault();
+  if (e.target === chooseFileBtn) return;
+  fileInput.click();
 });
 dropZone.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === ' ') fileInput.click();
@@ -54,27 +57,21 @@ function showHtml(html) {
   previewIframe.style.display = 'block';
   previewJson.style.display   = 'none';
   previewIframe.srcdoc = html;
-  showingRaw = false;
-  toggleRaw.textContent = 'Show raw JSON';
 }
 
 function showJsonOnly(data) {
   previewIframe.style.display = 'none';
   previewJson.style.display   = 'block';
   previewJson.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-  toggleRaw.hidden = true;
 }
 
 function setPreview(body) {
   const result = body.result;
-  rawJson = JSON.stringify(body, null, 2);
 
   // Case 1: result is a string — check if it looks like HTML
   if (typeof result === 'string') {
     if (looksLikeHtml(result)) {
       showHtml(result);
-      toggleRaw.hidden = false;
-      toggleRaw.textContent = 'Show raw JSON';
     } else {
       showJsonOnly(result);
     }
@@ -86,8 +83,6 @@ function setPreview(body) {
     const textField = result.text;
     if (typeof textField === 'string' && looksLikeHtml(textField)) {
       showHtml(textField);
-      toggleRaw.hidden = false;
-      toggleRaw.textContent = 'Show raw JSON';
       return;
     }
     // Non-HTML JSON object: show as formatted JSON
@@ -98,21 +93,6 @@ function setPreview(body) {
   // Fallback
   showJsonOnly(result ?? body);
 }
-
-toggleRaw.addEventListener('click', () => {
-  if (!showingRaw) {
-    previewIframe.style.display = 'none';
-    previewJson.style.display   = 'block';
-    previewJson.textContent = rawJson;
-    toggleRaw.textContent = 'Show preview';
-    showingRaw = true;
-  } else {
-    previewJson.style.display = 'none';
-    previewIframe.style.display = 'block';
-    toggleRaw.textContent = 'Show raw JSON';
-    showingRaw = false;
-  }
-});
 
 // --- upload ---
 uploadBtn.addEventListener('click', async () => {
