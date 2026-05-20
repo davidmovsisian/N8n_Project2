@@ -9,8 +9,10 @@ COPY src/enrichment_service.py /app/src/enrichment_service.py
 COPY src/__init__.py /app/src/__init__.py
 COPY src/templates /app/src/templates
 RUN mkdir -p /home/node/incoming_docs
+RUN mkdir -p /home/node/output_docs
 
 ENV INCOMING_DOCS_DIR=/home/node/incoming_docs
+ENV OUTPUT_DOCS_DIR=/home/node/output_docs
 
 EXPOSE 8000
 
