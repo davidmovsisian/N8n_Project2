@@ -107,7 +107,8 @@ class UploadFileTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         _, kwargs = mock_post.call_args
-        self.assertEqual(kwargs.get("json"), {"filename": "document.pdf"})
+        self.assertEqual(kwargs.get("headers"), {"X-Filename": "document.pdf"})
+        self.assertNotIn("json", kwargs)
         self.assertNotIn("files", kwargs)
 
     # ------------------------------------------------------------------
