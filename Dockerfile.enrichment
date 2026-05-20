@@ -2,17 +2,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir flask requests python-dotenv
 
-COPY src/enrichment_service.py /app/src/enrichment_service.py
-COPY src/__init__.py /app/src/__init__.py
-COPY src/templates /app/src/templates
-RUN mkdir -p /home/node/incoming_docs
-RUN mkdir -p /home/node/output_docs
+COPY src/ /app/src
 
-ENV INCOMING_DOCS_DIR=/home/node/incoming_docs
-ENV OUTPUT_DOCS_DIR=/home/node/output_docs
+ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
 

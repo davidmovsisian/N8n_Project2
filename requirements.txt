@@ -2,3 +2,4 @@ pymupdf
 python-docx
 flask
 requests
+python-dotenv

@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import json
 import os
 import uuid
 from typing import Any
 
 import requests as http_client
+from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from werkzeug.utils import secure_filename
-import json
+
+load_dotenv()
 
 app = Flask(__name__, template_folder="templates")
 
@@ -16,13 +19,17 @@ app = Flask(__name__, template_folder="templates")
 # Upload-flow configuration
 # ---------------------------------------------------------------------------
 
-ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt", ".png", ".jpg", ".jpeg"}
-INCOMING_DOCS_DIR: str = os.environ.get("INCOMING_DOCS_DIR", "/home/node/incoming_docs")
+ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt"}
+
 N8N_WEBHOOK_URL: str = os.environ.get(
     "N8N_WEBHOOK_URL",
-    "http://localhost:5678/webhook/document-intake",
+    "http://n8n:5678/webhook/document-intake",
 )
 N8N_TIMEOUT: int = int(os.environ.get("N8N_TIMEOUT", "60"))
+INCOMING_DOCS_DIR: str = os.environ.get("INCOMING_DOCS_DIR", "/home/node/incoming_docs")
+OUTPUT_DOCS_DIR: str = os.environ.get("OUTPUT_DOCS_DIR", "/home/node/output_docs")
+FLASK_HOST: str = os.environ.get("FLASK_HOST", "0.0.0.0")
+FLASK_PORT: int = int(os.environ.get("FLASK_PORT", "8000"))
 
 CATEGORY_DEPARTMENT_MAP = {
     "invoice": "Finance",
@@ -167,10 +174,6 @@ def enrich():
     return jsonify(enrich_payload(payload))
 
 
-# ---------------------------------------------------------------------------
-# UI + direct-upload flow
-# ---------------------------------------------------------------------------
-
 @app.get("/")
 def index():
     return render_template("index.html")
@@ -187,37 +190,39 @@ def upload_file():
 
     filename = secure_filename(f.filename)
     if not filename:
-        return jsonify({"error": "Invalid file name"}), 400
+        return jsonify({"error": "Invalid filename"}), 400
 
     ext = os.path.splitext(filename)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         return jsonify({"error": f"Unsupported file type: {ext}"}), 415
 
     os.makedirs(INCOMING_DOCS_DIR, exist_ok=True)
-    save_path = os.path.join(INCOMING_DOCS_DIR, filename)
-
-    try:
-        f.save(save_path)
-    except OSError:
-        return jsonify({"error": "Failed to save uploaded file"}), 500
+    saved_path = os.path.join(INCOMING_DOCS_DIR, filename)
+    f.save(saved_path)
 
     try:
         webhook_response = http_client.post(
             N8N_WEBHOOK_URL,
-            headers={"X-Filename": filename},
+            json={"filename": filename},
             timeout=N8N_TIMEOUT,
         )
         webhook_response.raise_for_status()
     except http_client.exceptions.Timeout:
         return jsonify({"error": "n8n webhook timed out"}), 504
-    except http_client.exceptions.RequestException:
-        return jsonify({"error": "Webhook request failed"}), 502
+    except http_client.exceptions.RequestException as exc:
+        return jsonify({"error": "Webhook request failed", "details": str(exc)}), 502
 
-    resp_content_type = webhook_response.headers.get("Content-Type", "")
-    if "application/json" in resp_content_type:
+    response_content_type = webhook_response.headers.get("Content-Type", "")
+    if "application/json" in response_content_type:
         try:
-            data = webhook_response.json()
-            return jsonify({"filename": filename, "status": "ok", "result": data})
+            return jsonify(
+                {
+                    "filename": filename,
+                    "status": "ok",
+                    "saved_path": saved_path,
+                    "result": webhook_response.json(),
+                }
+            )
         except ValueError:
             pass
 
@@ -225,11 +230,12 @@ def upload_file():
         {
             "filename": filename,
             "status": "ok",
+            "saved_path": saved_path,
             "result": webhook_response.text,
-            "content_type": resp_content_type,
+            "content_type": response_content_type,
         }
     )
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host=FLASK_HOST, port=FLASK_PORT)

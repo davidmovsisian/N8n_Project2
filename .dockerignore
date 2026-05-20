@@ -1,5 +1,4 @@
-watcher.py
-.venv
+    .venv
 __pycache__
 *.pyc
 *.pyo
