@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document Analyzer</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}" />
 </head>
 <body>
   <main class="app">
@@ -26,11 +26,13 @@
         <label id="drop-zone" class="drop-zone">
           <input id="file-input" type="file" name="file" hidden />
           <span>Drag & drop a file here or click to upload</span>
+          <button type="button" id="choose-file-btn">Choose file</button>
         </label>
 
+        <div id="selected-file" class="selected-file"></div>
+
         <div class="actions">
-          <button type="button" id="choose-file-btn">Choose file</button>
-          <button type="submit">Analyze</button>
+          <button type="button" id="upload-btn">Analyze</button>
         </div>
       </form>
 
@@ -40,14 +42,14 @@
     <section class="panel result-panel">
       <div class="result-header">
         <h2>Analysis Result</h2>
-        <button type="button" id="toggle-raw-btn">Show Raw</button>
+        <button type="button" id="toggle-raw">Show Raw</button>
       </div>
 
       <div id="html-result" class="html-result hidden">
-        <iframe id="result-frame" title="Analysis result preview"></iframe>
+        <iframe id="preview-iframe" title="Analysis result preview"></iframe>
       </div>
 
-      <pre id="raw-result" class="raw-result hidden"></pre>
+      <pre id="preview-json" class="raw-result hidden"></pre>
 
       <div id="empty-state" class="empty-state">
         Enter your email and upload a file to see analysis results.

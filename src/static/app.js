@@ -1,6 +1,7 @@
 const dropZone     = document.getElementById('drop-zone');
 const fileInput    = document.getElementById('file-input');
 const uploadBtn    = document.getElementById('upload-btn');
+const chooseFileBtn = document.getElementById('choose-file-btn');
 const selectedFile = document.getElementById('selected-file');
 const emailInput   = document.getElementById('email-input');
 const statusEl     = document.getElementById('status');
@@ -20,6 +21,7 @@ function setFile(file) {
 }
 
 fileInput.addEventListener('change', () => setFile(fileInput.files[0] || null));
+chooseFileBtn.addEventListener('click', () => fileInput.click());
 
 // --- drag and drop ---
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
@@ -115,13 +117,24 @@ toggleRaw.addEventListener('click', () => {
 // --- upload ---
 uploadBtn.addEventListener('click', async () => {
   if (!currentFile) return;
+  const email = (emailInput?.value || '').trim();
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email) {
+    setStatus('Error: Email is required', 'error');
+    emailInput?.focus();
+    return;
+  }
+  if (!emailPattern.test(email)) {
+    setStatus('Error: Enter a valid email address', 'error');
+    emailInput?.focus();
+    return;
+  }
 
   uploadBtn.disabled = true;
   setStatus('Uploading…', 'busy');
 
   const formData = new FormData();
   formData.append('file', currentFile);
-  const email = (emailInput?.value || '').trim();
   formData.append('email', email);
 
   try {

@@ -32,6 +32,22 @@ class UploadFileTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Document Analyzer", response.data)
 
+    def test_index_marks_email_as_required(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'id="email-input"', response.data)
+        self.assertIn(b'type="email"', response.data)
+        self.assertIn(b"required", response.data)
+
+    def test_index_places_choose_file_button_inside_drop_zone(self):
+        response = self.client.get("/")
+        html = response.data.decode("utf-8")
+        drop_zone_open = html.index('<label id="drop-zone" class="drop-zone">')
+        choose_file_btn = html.index('id="choose-file-btn"')
+        drop_zone_close = html.index("</label>", drop_zone_open)
+        self.assertLess(drop_zone_open, choose_file_btn)
+        self.assertLess(choose_file_btn, drop_zone_close)
+
     # ------------------------------------------------------------------
     # POST /upload-file — validation errors
     # ------------------------------------------------------------------
