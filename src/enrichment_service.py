@@ -180,9 +180,14 @@ def index():
 
 
 @app.post("/upload-file")
+@app.post("/upload-file")
 def upload_file():
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
+
+    email = (request.form.get("email") or "").strip()
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
 
     f = request.files["file"]
     if not f.filename:
@@ -203,7 +208,7 @@ def upload_file():
     try:
         webhook_response = http_client.post(
             N8N_WEBHOOK_URL,
-            headers={"X-Filename": filename},
+            json={"filename": filename, "email": email},
             timeout=N8N_TIMEOUT,
         )
         webhook_response.raise_for_status()
@@ -218,6 +223,7 @@ def upload_file():
             return jsonify(
                 {
                     "filename": filename,
+                    "email": email,
                     "status": "ok",
                     "saved_path": saved_path,
                     "result": webhook_response.json(),
@@ -229,13 +235,13 @@ def upload_file():
     return jsonify(
         {
             "filename": filename,
+            "email": email,
             "status": "ok",
             "saved_path": saved_path,
             "result": webhook_response.text,
             "content_type": response_content_type,
         }
     )
-
 
 if __name__ == "__main__":
     app.run(host=FLASK_HOST, port=FLASK_PORT)
