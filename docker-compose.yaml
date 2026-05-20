@@ -50,8 +50,6 @@ services:
     volumes:
       - incoming_docs:/home/node/incoming_docs
       - output_docs:/home/node/output_docs
-    depends_on:
-      - n8n
 
 volumes:
   n8n_data:
