@@ -203,9 +203,9 @@ def upload_file():
     try:
         webhook_response = http_client.post(
             N8N_WEBHOOK_URL,
-            headers={"X-Filename": filename},
+            json={"filename": filename},
             timeout=N8N_TIMEOUT,
-        )
+)
         webhook_response.raise_for_status()
     except http_client.exceptions.Timeout:
         return jsonify({"error": "n8n webhook timed out"}), 504
