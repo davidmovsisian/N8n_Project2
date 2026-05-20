@@ -1,13 +1,27 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import os
 import uuid
 from typing import Any
 
-from flask import Flask, jsonify, request
+import requests as http_client
+from flask import Flask, jsonify, render_template, request
+from werkzeug.utils import secure_filename
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
+
+# ---------------------------------------------------------------------------
+# Upload-flow configuration
+# ---------------------------------------------------------------------------
+
+ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt", ".png", ".jpg", ".jpeg"}
+N8N_WEBHOOK_URL: str = os.environ.get(
+    "N8N_WEBHOOK_URL",
+    "http://localhost:5678/webhook/document-intake",
+)
+N8N_TIMEOUT: int = int(os.environ.get("N8N_TIMEOUT", "60"))
 
 CATEGORY_DEPARTMENT_MAP = {
     "invoice": "Finance",
@@ -150,6 +164,62 @@ def enrich():
     json_payload = json.dumps(payload, indent=2)
     print(f"Received payload:\n{json_payload}")
     return jsonify(enrich_payload(payload))
+
+
+# ---------------------------------------------------------------------------
+# UI + direct-upload flow
+# ---------------------------------------------------------------------------
+
+@app.get("/")
+def index():
+    return render_template("index.html")
+
+
+@app.post("/upload-file")
+def upload_file():
+    if "file" not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+
+    f = request.files["file"]
+    if not f.filename:
+        return jsonify({"error": "No file selected"}), 400
+
+    filename = secure_filename(f.filename)
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        return jsonify({"error": f"Unsupported file type: {ext}"}), 415
+
+    file_bytes = f.read()
+    content_type = f.content_type or "application/octet-stream"
+
+    try:
+        webhook_response = http_client.post(
+            N8N_WEBHOOK_URL,
+            files={"file": (filename, file_bytes, content_type)},
+            timeout=N8N_TIMEOUT,
+        )
+        webhook_response.raise_for_status()
+    except http_client.exceptions.Timeout:
+        return jsonify({"error": "n8n webhook timed out"}), 504
+    except http_client.exceptions.RequestException:
+        return jsonify({"error": "Webhook request failed"}), 502
+
+    resp_content_type = webhook_response.headers.get("Content-Type", "")
+    if "application/json" in resp_content_type:
+        try:
+            data = webhook_response.json()
+            return jsonify({"filename": filename, "status": "ok", "result": data})
+        except ValueError:
+            pass
+
+    return jsonify(
+        {
+            "filename": filename,
+            "status": "ok",
+            "result": webhook_response.text,
+            "content_type": resp_content_type,
+        }
+    )
 
 
 if __name__ == "__main__":
