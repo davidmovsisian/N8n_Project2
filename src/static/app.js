@@ -2,6 +2,7 @@ const dropZone     = document.getElementById('drop-zone');
 const fileInput    = document.getElementById('file-input');
 const uploadBtn    = document.getElementById('upload-btn');
 const selectedFile = document.getElementById('selected-file');
+const emailInput   = document.getElementById('email-input');
 const statusEl     = document.getElementById('status');
 const previewIframe = document.getElementById('preview-iframe');
 const previewJson  = document.getElementById('preview-json');
@@ -120,6 +121,8 @@ uploadBtn.addEventListener('click', async () => {
 
   const formData = new FormData();
   formData.append('file', currentFile);
+  const email = (emailInput?.value || '').trim();
+  formData.append('email', email);
 
   try {
     const res = await fetch('/upload-file', { method: 'POST', body: formData });
