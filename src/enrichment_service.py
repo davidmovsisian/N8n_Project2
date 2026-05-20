@@ -180,7 +180,6 @@ def index():
 
 
 @app.post("/upload-file")
-@app.post("/upload-file")
 def upload_file():
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
