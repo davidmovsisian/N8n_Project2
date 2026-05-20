@@ -7,9 +7,11 @@ A web-based interface is available at `GET /` served by the Flask enrichment ser
 ### Flow
 1. User drags and drops (or picks) a file in the browser.
 2. The browser sends `POST /upload-file` (multipart/form-data) to Flask.
-3. Flask validates the file, then forwards it to the configured n8n webhook.
-4. Flask returns the n8n response as structured JSON.
-5. The browser renders the result (HTML preview or JSON) in the preview panel.
+3. Flask validates the file and saves it to `/home/node/incoming_docs`.
+4. Flask calls the configured n8n webhook with the uploaded **filename only**.
+5. n8n reads the file from `/home/node/incoming_docs` and processes it.
+6. Flask returns the n8n response as structured JSON.
+7. The browser renders the result (HTML preview or JSON) in the preview panel.
 
 ### Supported file types
 `.pdf`, `.docx`, `.txt`, `.png`, `.jpg`, `.jpeg`
@@ -20,6 +22,7 @@ A web-based interface is available at `GET /` served by the Flask enrichment ser
 |---|---|---|
 | `N8N_WEBHOOK_URL` | `http://localhost:5678/webhook/document-intake` | Full URL of the n8n webhook endpoint |
 | `N8N_TIMEOUT` | `60` | Seconds to wait for the n8n webhook response |
+| `INCOMING_DOCS_DIR` | `/home/node/incoming_docs` | Directory where Flask saves uploaded files before notifying n8n |
 
 ### Run locally
 ```bash
@@ -38,6 +41,7 @@ A lightweight Python service is available at `src/enrichment_service.py`.
 ### Endpoints
 - `GET /` — Document Analyzer web UI
 - `POST /upload-file` — accepts a file upload, calls the n8n webhook, returns JSON result
+- `POST /upload-file` saves the file to disk and sends only `filename` to n8n
 - `POST /enrich` — enriches Gemini/LLM JSON output with metadata
 - `GET /health` — returns exactly `{"status": "ok"}`
 - `GET /categories` — returns available document categories
@@ -57,6 +61,7 @@ The workflow (`N8N_Project.json`) now contains an HTTP Request node named exactl
 `docker-compose.yaml` now includes an `enrichment-service` container and sets:
 - `ENRICH_SERVICE_BASE_URL=http://enrichment-service:8000`
 - The enrichment service container is built from `Dockerfile.enrichment`
+- The enrichment service mounts `./incoming_docs` to `/home/node/incoming_docs`
 
 Add `N8N_WEBHOOK_URL` to the `enrichment-service` environment block in `docker-compose.yaml` to point at the n8n container:
 ```yaml
@@ -70,4 +75,3 @@ Run the microservice tests:
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 ```
-

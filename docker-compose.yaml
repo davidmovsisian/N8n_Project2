@@ -45,6 +45,12 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    environment:
+      - N8N_WEBHOOK_URL=http://n8n:5678/webhook/document-intake
+      - N8N_TIMEOUT=60
+      - INCOMING_DOCS_DIR=/home/node/incoming_docs
+    volumes:
+      - ./incoming_docs:/home/node/incoming_docs
 
 volumes:
   n8n_data:
