@@ -203,7 +203,7 @@ def upload_file():
     try:
         webhook_response = http_client.post(
             N8N_WEBHOOK_URL,
-            json={"filename": filename},
+            headers={"X-Filename": filename},
             timeout=N8N_TIMEOUT,
         )
         webhook_response.raise_for_status()

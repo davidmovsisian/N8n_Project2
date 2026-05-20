@@ -6,7 +6,14 @@ USER root
 # COPY requirements.txt /tmp/requirements.txt
 RUN cd /opt/runners/task-runner-python && uv pip install --no-cache-dir pymupdf python-docx
 
+# Copy extraction / processing scripts
+COPY src/ /opt/scripts/
+
 # Copy allowlist config
 COPY n8n-task-runners.json /etc/n8n-task-runners.json
+
+# Ensure shared folders exist
+RUN mkdir -p /home/node/incoming_docs /home/node/output_docs \
+    && chown -R runner:runner /home/node/incoming_docs /home/node/output_docs
 
 USER runner

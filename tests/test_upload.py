@@ -135,6 +135,28 @@ class UploadFileTests(unittest.TestCase):
         self.assertEqual(body["status"], "ok")
         self.assertEqual(body["result"], html_content)
 
+    def test_upload_success_json_with_html_text_field(self):
+        """When n8n returns JSON where the 'text' field contains HTML, the result
+        object is returned as-is so the frontend can extract and render the HTML."""
+        html_in_json = {"text": "<!DOCTYPE html><html><body><h1>Report</h1></body></html>"}
+        mock_resp = MagicMock()
+        mock_resp.headers = {"Content-Type": "application/json"}
+        mock_resp.json.return_value = html_in_json
+        mock_resp.raise_for_status.return_value = None
+
+        with patch("src.enrichment_service.http_client.post", return_value=mock_resp):
+            data = {"file": (io.BytesIO(b"content"), "report.pdf")}
+            response = self.client.post(
+                "/upload-file",
+                data=data,
+                content_type="multipart/form-data",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        body = response.get_json()
+        self.assertEqual(body["status"], "ok")
+        self.assertEqual(body["result"], html_in_json)
+
     # ------------------------------------------------------------------
     # POST /upload-file — webhook errors
     # ------------------------------------------------------------------
