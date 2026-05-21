@@ -9,8 +9,35 @@ const previewIframe = document.getElementById('preview-iframe');
 const previewJson  = document.getElementById('preview-json');
 const htmlResult   = document.getElementById('html-result');
 const emptyState   = document.getElementById('empty-state');
+const downloadBtn  = document.getElementById('download-btn');
 
 let currentFile = null;
+
+// --- download ---
+downloadBtn.addEventListener('click', async () => {
+  if (!currentFile) return;
+  const base = currentFile.name.replace(/\.[^.]+$/, '');
+  const downloadName = base + '.html';
+  try {
+    const res = await fetch(`/download-file?filename=${encodeURIComponent(currentFile.name)}`);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setStatus(`Download error: ${body.error || res.statusText}`, 'error');
+      return;
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = downloadName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    setStatus(`Download error: ${err.message}`, 'error');
+  }
+});
 
 // --- file selection ---
 function setFile(file) {
@@ -54,6 +81,7 @@ function showHtml(html) {
   previewJson.classList.add('hidden');
   emptyState.classList.add('hidden');
   previewIframe.srcdoc = html;
+  downloadBtn.classList.remove('hidden');
 }
 
 function showJsonOnly(data) {
@@ -61,6 +89,7 @@ function showJsonOnly(data) {
   previewJson.classList.remove('hidden');
   emptyState.classList.add('hidden');
   previewJson.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+  downloadBtn.classList.remove('hidden');
 }
 
 function setPreview(body) {

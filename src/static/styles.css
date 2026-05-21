@@ -136,6 +136,28 @@ button:disabled {
   gap: 12px;
 }
 
+.download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #cdd5df;
+  border-radius: 8px;
+  color: #344054;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.download-btn:hover {
+  background: #eef6ff;
+  border-color: #0a4d8c;
+  color: #0a4d8c;
+  opacity: 1;
+}
+
 .html-result {
   margin-top: 16px;
 }

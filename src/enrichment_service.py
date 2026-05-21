@@ -8,7 +8,7 @@ from typing import Any
 
 import requests as http_client
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_file
 from werkzeug.utils import secure_filename
 
 load_dotenv()
@@ -249,6 +249,26 @@ def upload_file():
             "content_type": response_content_type,
         }
     )
+
+@app.get("/download-file")
+def download_file():
+    filename = request.args.get("filename", "").strip()
+    if not filename:
+        return jsonify({"error": "filename is required"}), 400
+
+    safe_name = secure_filename(filename)
+    if not safe_name:
+        return jsonify({"error": "Invalid filename"}), 400
+
+    base = os.path.splitext(safe_name)[0]
+    output_filename = base + ".html"
+
+    file_path = os.path.join(OUTPUT_DOCS_DIR, output_filename)
+    if not os.path.isfile(file_path):
+        return jsonify({"error": f"File not found: {output_filename}"}), 404
+
+    return send_file(file_path, as_attachment=True, download_name=output_filename)
+
 
 if __name__ == "__main__":
     app.run(host=FLASK_HOST, port=FLASK_PORT)
