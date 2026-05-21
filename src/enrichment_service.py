@@ -14,6 +14,14 @@ from werkzeug.utils import secure_filename
 load_dotenv()
 
 app = Flask(__name__, template_folder="templates")
+# app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+
+
+# @app.after_request
+# def disable_static_cache(response):
+#     if request.path.startswith("/static/"):
+#         response.headers["Cache-Control"] = "no-store"
+#     return response
 
 # ---------------------------------------------------------------------------
 # Upload-flow configuration

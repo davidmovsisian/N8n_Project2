@@ -140,7 +140,7 @@ button:disabled {
   margin-top: 16px;
 }
 
-#result-frame {
+#preview-iframe {
   width: 100%;
   min-height: 75vh;
   border: 1px solid #d8dee8;
@@ -169,12 +169,36 @@ button:disabled {
   display: none;
 }
 
+.file-input-hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+label#choose-file-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #0a4d8c;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+  user-select: none;
+}
+
+label#choose-file-btn:hover {
+  opacity: 0.92;
+}
+
 @media (max-width: 960px) {
   .app {
     grid-template-columns: 1fr;
   }
 
-  #result-frame {
+  #preview-iframe {
     min-height: 60vh;
   }
 }

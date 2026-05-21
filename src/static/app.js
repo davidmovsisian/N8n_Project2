@@ -7,6 +7,8 @@ const emailInput   = document.getElementById('email-input');
 const statusEl     = document.getElementById('status');
 const previewIframe = document.getElementById('preview-iframe');
 const previewJson  = document.getElementById('preview-json');
+const htmlResult   = document.getElementById('html-result');
+const emptyState   = document.getElementById('empty-state');
 
 let currentFile = null;
 
@@ -18,11 +20,6 @@ function setFile(file) {
 }
 
 fileInput.addEventListener('change', () => setFile(fileInput.files[0] || null));
-chooseFileBtn.addEventListener('click', e => {
-  e.preventDefault();
-  e.stopPropagation();
-  fileInput.click();
-});
 
 // --- drag and drop ---
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
@@ -34,7 +31,6 @@ dropZone.addEventListener('drop', e => {
   if (file) setFile(file);
 });
 dropZone.addEventListener('click', e => {
-  e.preventDefault();
   if (e.target === chooseFileBtn) return;
   fileInput.click();
 });
@@ -54,14 +50,16 @@ function looksLikeHtml(str) {
 }
 
 function showHtml(html) {
-  previewIframe.style.display = 'block';
-  previewJson.style.display   = 'none';
+  htmlResult.classList.remove('hidden');
+  previewJson.classList.add('hidden');
+  emptyState.classList.add('hidden');
   previewIframe.srcdoc = html;
 }
 
 function showJsonOnly(data) {
-  previewIframe.style.display = 'none';
-  previewJson.style.display   = 'block';
+  htmlResult.classList.add('hidden');
+  previewJson.classList.remove('hidden');
+  emptyState.classList.add('hidden');
   previewJson.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
 }
 

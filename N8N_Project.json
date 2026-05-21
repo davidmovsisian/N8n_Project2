@@ -1,5 +1,5 @@
 {
-  "name": "n8n_project",
+  "name": "my_n8n_project",
   "nodes": [
     {
       "parameters": {
@@ -38,8 +38,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1760,
-        496
+        -1776,
+        544
       ],
       "id": "0566f89a-a5a9-4e94-bb85-1d9899e8aa27",
       "name": "If"
@@ -56,8 +56,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -2208,
-        496
+        -2224,
+        544
       ],
       "id": "99c7dc3f-3eed-475f-b33d-03f9479648a8",
       "name": "Webhook",
@@ -72,8 +72,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -608,
-        496
+        -624,
+        544
       ],
       "id": "0bcf1b0d-8bc7-4514-82cc-c6b069a2e3cc",
       "name": "Simple Memory"
@@ -105,8 +105,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1536,
-        288
+        -1552,
+        320
       ],
       "id": "1709a432-34cc-43c1-8e59-7c2e1f429651",
       "name": "If1"
@@ -140,8 +140,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1536,
-        720
+        -1552,
+        768
       ],
       "id": "4c02e4e6-68fc-482e-8c9c-f3dbcf2e0588",
       "name": "If2"
@@ -217,7 +217,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        144,
+        128,
         176
       ],
       "id": "efe57eaa-345a-4e29-97ad-30c6a8cdc1d7",
@@ -231,8 +231,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1312,
-        624
+        -1328,
+        672
       ],
       "id": "4a416b0f-f998-4785-a0d9-aed47c7b4b30",
       "name": "proceed txt"
@@ -245,8 +245,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1312,
-        240
+        -1328,
+        288
       ],
       "id": "26fde79e-ae51-4ba1-83ac-bd88fa38b458",
       "name": "procced pdf",
@@ -267,8 +267,8 @@
       "type": "@n8n/n8n-nodes-langchain.guardrails",
       "typeVersion": 2,
       "position": [
-        -1072,
-        432
+        -1104,
+        480
       ],
       "id": "543a9fca-d1a4-43cc-a327-6fadbb004163",
       "name": "Guardrails"
@@ -280,8 +280,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -928,
-        768
+        -944,
+        816
       ],
       "id": "c023f436-6ba5-46e3-98aa-c14e698d5d39",
       "name": "Error Respond"
@@ -294,8 +294,8 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -352,
-        496
+        -368,
+        544
       ],
       "id": "c4f382d3-191f-40c7-8b12-9e3ae86be730",
       "name": "Structured Output Parser"
@@ -308,8 +308,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1312,
-        432
+        -1328,
+        480
       ],
       "id": "0da88642-9b3b-40de-b45b-08ed326f5771",
       "name": "procceed docx",
@@ -332,8 +332,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        768,
-        288
+        720,
+        432
       ],
       "id": "3141ae96-500c-49a7-a228-517269c0b439",
       "name": "Send a message",
@@ -477,7 +477,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        432,
+        416,
         176
       ],
       "id": "c03049fa-e0d0-44cc-8adc-158833ea1422",
@@ -503,8 +503,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -736,
-        496
+        -752,
+        544
       ],
       "id": "798074fb-081c-4bba-a9e0-bee7033cbd81",
       "name": "OpenAI Chat Model",
@@ -520,8 +520,8 @@
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1.1,
       "position": [
-        -480,
-        496
+        -496,
+        544
       ],
       "id": "65a2062d-bf2f-4320-9e1f-b77e05ea52eb",
       "name": "Think"
@@ -539,7 +539,7 @@
             {
               "id": "ff7b07b2-c375-4b56-ac89-d51f80e8f78a",
               "name": "recipient",
-              "value": "movsisian.david@gmail.com",
+              "value": "={{ $json.body.email }}",
               "type": "string"
             },
             {
@@ -563,27 +563,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1984,
-        496
+        -2000,
+        544
       ],
       "id": "afb96d10-4d9f-4c10-8c1a-0356d71cb5d4",
       "name": "Configure"
-    },
-    {
-      "parameters": {
-        "operation": "html",
-        "options": {
-          "fileName": "={{ $('Configure').item.json['output file name'] }}"
-        }
-      },
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [
-        432,
-        480
-      ],
-      "id": "8516e020-e7ab-42ee-94d8-d2a6bdfc149b",
-      "name": "Convert to File"
     },
     {
       "parameters": {
@@ -594,8 +578,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        768,
-        576
+        720,
+        608
       ],
       "id": "19f927bd-a658-4cfe-aa70-198e968f1604",
       "name": "Read/Write Files from Disk"
@@ -613,8 +597,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        80,
-        672
+        64,
+        704
       ],
       "id": "6b11ab65-ab77-40f1-8155-6468a531fad7",
       "name": "OpenAI Chat Model1",
@@ -638,8 +622,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -1088,
-        592
+        -1120,
+        640
       ],
       "id": "9d13e13b-5c0f-4fce-8651-70a5a732fcd1",
       "name": "OpenAI Chat Model2",
@@ -662,8 +646,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -608,
-        272
+        -640,
+        320
       ],
       "id": "30b8d97f-e91e-492c-96fc-c58c0168e6f8",
       "name": "Analyze document"
@@ -680,8 +664,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -144,
-        384
+        -160,
+        416
       ],
       "id": "666f2aa2-197a-48d9-9875-544f37f7f9ea",
       "name": "Enrich content"
@@ -689,14 +673,14 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Role:\nYou are a financial analyst. Given the following document data, produce a comprehensive analysis in HTML format. Use clear headings, bullet points, and tables where appropriate to ensure the output is professional and easy to scan.\n\nInstractions:\n1. **Executive Summary** – 3–4 sentence overview\n2. **Key Financial Highlights** – bullet points on top metrics\n3. **Geographic Breakdown** – brief narrative on sales by region  \n4. **Risks & Watch Items** – based on the action items\n5. **Sentiment** – overall tone and rationale\n\nDocument data:\n{{ $json.output.toJsonString()}}",
+        "text": "=Role:\nYou are a financial analyst. Given the following document data, produce a comprehensive analysis in HTML format. Use clear headings, bullet points, and tables where appropriate to ensure the output is professional and easy to scan.\n\nInstractions:\n1. Executive Summary – 3–4 sentence overview\n2. Key Financial Highlights – bullet points on top metrics\n3. Geographic Breakdown – brief narrative on sales by region  \n4. Risks & Watch Items – based on the action items\n5. Sentiment – overall tone and rationale\n\nRules:\nRemove ALL '\\n' characters in produced document\n\nDocument data:\n{{ $json.output.toJsonString()}}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        80,
-        480
+        64,
+        528
       ],
       "id": "e56ad46a-47c0-4e77-9217-43ad5307c965",
       "name": "Summary"
@@ -712,8 +696,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
       "position": [
-        -2144,
-        1168
+        -2272,
+        1248
       ],
       "id": "addcee7b-bdec-454b-a748-f06520712472",
       "name": "Schedule Trigger"
@@ -739,8 +723,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -1936,
-        1168
+        -2048,
+        1248
       ],
       "id": "9d94bb2a-639d-4701-9818-368620f8a9c2",
       "name": "Get row(s) in sheet",
@@ -768,8 +752,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1504,
-        1168
+        -1600,
+        1248
       ],
       "id": "f8934b48-9db1-4b71-a17a-48b0c23a2262",
       "name": "Edit Fields1"
@@ -801,8 +785,8 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        -1728,
-        1168
+        -1824,
+        1248
       ],
       "id": "129276a6-7883-43e9-8fca-51367e057811",
       "name": "Filter"
@@ -814,8 +798,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1296,
-        1168
+        -1376,
+        1248
       ],
       "id": "f3a095ac-5d6c-4839-9ca4-b8057a510fe4",
       "name": "Code in JavaScript"
@@ -830,8 +814,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        -1088,
-        1168
+        -1152,
+        1248
       ],
       "id": "7ee013ce-7203-4992-98bc-4854b6ed9b05",
       "name": "Send a message1",
@@ -851,8 +835,8 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -2176,
-        1056
+        -2336,
+        1088
       ],
       "typeVersion": 1,
       "id": "0d9356ec-1c1d-4b79-ba90-26c04ba32e5c",
@@ -867,7 +851,7 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -2272,
+        -2336,
         192
       ],
       "typeVersion": 1,
@@ -878,12 +862,12 @@
       "parameters": {
         "content": "## Analyze content and enrich",
         "height": 752,
-        "width": 752,
+        "width": 768,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -752,
+        -816,
         192
       ],
       "typeVersion": 1,
@@ -893,14 +877,14 @@
     {
       "parameters": {
         "content": "## Save to Google sheet, create summary ta save on disk and send as attachement to recipient email",
-        "height": 944,
+        "height": 880,
         "width": 1152,
         "color": 3
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        0,
-        0
+        -48,
+        64
       ],
       "typeVersion": 1,
       "id": "734c80b7-2f17-4859-a5b5-972a5aa22cf6",
@@ -913,11 +897,109 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        528,
-        720
+        448,
+        624
       ],
       "id": "2dbad1de-016c-4acf-91bf-1e58d50720e3",
       "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const html = item.json.text;\n  const filename = $('Configure').item.json['output file name'] || 'output.html';\n  const buffer = Buffer.from(html, 'utf8');\n  item.binary = item.binary || {};\n  item.binary.data = await this.helpers.prepareBinaryData(\n    buffer,\n    filename,\n    'text/html'\n  );\n}\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        432
+      ],
+      "id": "16b6a400-77d5-4907-ad80-050215476b7c",
+      "name": "Save to file"
+    },
+    {
+      "parameters": {
+        "html_content": "=<html>{{ $json.text }}</html>",
+        "output_filename": "",
+        "dynamic_params": {
+          "params": [
+            {
+              "key": "filename",
+              "value": "Summary.pdf"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-htmlcsstopdf.htmlcsstopdf",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -208
+      ],
+      "id": "d4239d97-428a-4fcb-9e86-16b5eac3bf9e",
+      "name": "Convert HTML to PDF",
+      "credentials": {
+        "htmlcsstopdfApi": {
+          "id": "HitEQRxZ2Yuylsxy",
+          "name": "HTML to PDF account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pdf_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        -208
+      ],
+      "id": "7885ff6d-a024-494d-ba23-19b9f0e7087d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "## Convert summary to pdf and send to gmail"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -32,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "05cc86a0-15e3-4a3b-be28-645c14a16adf",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Configure').item.json.recipient }}",
+        "subject": "={{ $('Enrich content').item.json.output.classification + ', ' + $('Enrich content').item.json.output.company }}",
+        "emailType": "text",
+        "message": "={{'Link to Google Sheet: ' }}{{ $('Configure').item.json['google sheet link'] }}",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        -208
+      ],
+      "id": "a73f070f-e425-4638-8ce0-bb81597c1c28",
+      "name": "Send a message2",
+      "webhookId": "16090bfc-0a06-4ef9-8200-c7c5e32f1a80",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MExQ6DcvGPlc7HY8",
+          "name": "Gmail account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1086,22 +1168,6 @@
         ]
       ]
     },
-    "Convert to File": {
-      "main": [
-        [
-          {
-            "node": "Send a message",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Read/Write Files from Disk",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "OpenAI Chat Model1": {
       "ai_languageModel": [
         [
@@ -1173,12 +1239,12 @@
       "main": [
         [
           {
-            "node": "Convert to File",
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Respond to Webhook",
+            "node": "Save to file",
             "type": "main",
             "index": 0
           }
@@ -1239,6 +1305,44 @@
           }
         ]
       ]
+    },
+    "Save to file": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert HTML to PDF": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1246,7 +1350,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "280d82c3-509f-4eba-9bf9-0e3fad38a997",
+  "versionId": "f0f05f2c-4f8a-4653-a55f-d7f3d3f79347",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f097b0f5ff1c01aa69571fafaa40e26daef8c6ae39d2132ff6f0ce3ce11299c2"

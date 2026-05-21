@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document Analyzer</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=3" />
 </head>
 <body>
   <main class="app">
@@ -23,11 +23,11 @@
           />
         </div>
 
-        <label id="drop-zone" class="drop-zone">
-          <input id="file-input" type="file" name="file" hidden />
+        <div id="drop-zone" class="drop-zone">
+          <input id="file-input" type="file" name="file" class="file-input-hidden" />
           <span>Drag & drop a file here or click to upload</span>
-          <button type="button" id="choose-file-btn">Choose file</button>
-        </label>
+          <label for="file-input" id="choose-file-btn">Choose file</label>
+        </div>
 
         <div id="selected-file" class="selected-file"></div>
 
@@ -56,6 +56,6 @@
     </section>
   </main>
 
-  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script src="{{ url_for('static', filename='app.js') }}?v=3"></script>
 </body>
 </html>
