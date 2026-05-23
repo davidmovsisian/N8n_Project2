@@ -1,17 +1,62 @@
-const dropZone     = document.getElementById('drop-zone');
-const fileInput    = document.getElementById('file-input');
-const uploadBtn    = document.getElementById('upload-btn');
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const uploadBtn = document.getElementById('upload-btn');
 const chooseFileBtn = document.getElementById('choose-file-btn');
 const selectedFile = document.getElementById('selected-file');
-const emailInput   = document.getElementById('email-input');
-const statusEl     = document.getElementById('status');
+const emailInput = document.getElementById('email-input');
+const statusEl = document.getElementById('status');
 const previewIframe = document.getElementById('preview-iframe');
-const previewJson  = document.getElementById('preview-json');
-const htmlResult   = document.getElementById('html-result');
-const emptyState   = document.getElementById('empty-state');
-const downloadBtn  = document.getElementById('download-btn');
+const previewJson = document.getElementById('preview-json');
+const htmlResult = document.getElementById('html-result');
+const emptyState = document.getElementById('empty-state');
+const downloadBtn = document.getElementById('download-btn');
+const chatHistory = document.getElementById('chat-history');
+const chatInput = document.getElementById('chat-input');
+const sendChatBtn = document.getElementById('send-chat-btn');
+const chatbotPanel = document.getElementById('chatbot-panel');
+const resultPanel = document.getElementById('result-panel');
+const hideChatbotBtn = document.getElementById('hide-chatbot-btn');
+const hideResultBtn = document.getElementById('hide-result-btn');
+const panelButtons = document.querySelectorAll('[data-panel]');
 
 let currentFile = null;
+let chatMessages = [];
+
+// --- panel state ---
+function updatePanelControls() {
+  const chatbotCollapsed = chatbotPanel.classList.contains('collapsed');
+  const resultCollapsed = resultPanel.classList.contains('collapsed');
+
+  hideChatbotBtn.disabled = resultCollapsed;
+  hideResultBtn.disabled = chatbotCollapsed;
+}
+
+function togglePanel(panelName) {
+  const panel = panelName === 'chatbot' ? chatbotPanel : resultPanel;
+  const otherPanel = panelName === 'chatbot' ? resultPanel : chatbotPanel;
+
+  if (!panel.classList.contains('collapsed') && otherPanel.classList.contains('collapsed')) {
+    return;
+  }
+
+  panel.classList.toggle('collapsed');
+  updatePanelControls();
+}
+
+panelButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const panelName = button.dataset.panel;
+    const panel = panelName === 'chatbot' ? chatbotPanel : resultPanel;
+
+    if (button.classList.contains('collapsed-bar') && !panel.classList.contains('collapsed')) {
+      return;
+    }
+
+    togglePanel(panelName);
+  });
+});
+
+updatePanelControls();
 
 // --- download ---
 downloadBtn.addEventListener('click', async () => {
@@ -40,10 +85,17 @@ downloadBtn.addEventListener('click', async () => {
 });
 
 // --- file selection ---
+function updateChatAvailability() {
+  const enabled = Boolean(currentFile);
+  chatInput.disabled = !enabled;
+  sendChatBtn.disabled = !enabled;
+}
+
 function setFile(file) {
   currentFile = file;
   selectedFile.textContent = file ? `Selected: ${file.name}` : '';
   uploadBtn.disabled = !file;
+  updateChatAvailability();
 }
 
 fileInput.addEventListener('change', () => setFile(fileInput.files[0] || null));
@@ -68,7 +120,7 @@ dropZone.addEventListener('keydown', e => {
 // --- status helpers ---
 function setStatus(msg, type) {
   statusEl.textContent = msg;
-  statusEl.className = type;
+  statusEl.className = `status ${type || ''}`.trim();
 }
 
 // --- preview helpers ---
@@ -95,7 +147,6 @@ function showJsonOnly(data) {
 function setPreview(body) {
   const result = body.result;
 
-  // Case 1: result is a string — check if it looks like HTML
   if (typeof result === 'string') {
     if (looksLikeHtml(result)) {
       showHtml(result);
@@ -105,21 +156,91 @@ function setPreview(body) {
     return;
   }
 
-  // Case 2: result is a JSON object — check for a "text" field containing HTML
   if (result !== null && typeof result === 'object') {
     const textField = result.text;
     if (typeof textField === 'string' && looksLikeHtml(textField)) {
       showHtml(textField);
       return;
     }
-    // Non-HTML JSON object: show as formatted JSON
     showJsonOnly(result);
     return;
   }
 
-  // Fallback
   showJsonOnly(result ?? body);
 }
+
+// --- chat helpers ---
+function normalizeChatResponse(body) {
+  const result = body?.result;
+  if (typeof result === 'string') return result;
+  if (result && typeof result === 'object') {
+    if (typeof result.answer === 'string') return result.answer;
+    if (typeof result.text === 'string') return result.text;
+    if (typeof result.response === 'string') return result.response;
+    return JSON.stringify(result, null, 2);
+  }
+  return JSON.stringify(body, null, 2);
+}
+
+function renderChatMessages() {
+  if (!chatMessages.length) {
+    chatHistory.innerHTML = '<div class="chat-empty-state">Upload and analyze a document to start chatting about it.</div>';
+    return;
+  }
+
+  chatHistory.innerHTML = '';
+  chatMessages.forEach(message => {
+    const messageEl = document.createElement('div');
+    messageEl.className = `chat-message ${message.role}`;
+    messageEl.textContent = message.text;
+    chatHistory.appendChild(messageEl);
+  });
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+function addChatMessage(role, text) {
+  chatMessages.push({ role, text });
+  renderChatMessages();
+}
+
+async function sendChatMessage() {
+  const query = (chatInput.value || '').trim();
+  if (!currentFile || !query) return;
+
+  addChatMessage('user', query);
+  chatInput.value = '';
+  chatInput.disabled = true;
+  sendChatBtn.disabled = true;
+
+  const formData = new FormData();
+  formData.append('filename', currentFile.name);
+  formData.append('query', query);
+
+  try {
+    const res = await fetch('/document-query', { method: 'POST', body: formData });
+    const body = await res.json();
+
+    if (!res.ok) {
+      addChatMessage('assistant', `Error: ${body.error || res.statusText}`);
+      return;
+    }
+
+    addChatMessage('assistant', normalizeChatResponse(body));
+  } catch (err) {
+    addChatMessage('assistant', `Network error: ${err.message}`);
+  } finally {
+    updateChatAvailability();
+    chatInput.focus();
+  }
+}
+
+sendChatBtn.addEventListener('click', sendChatMessage);
+chatInput.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    sendChatMessage();
+  }
+});
 
 // --- upload ---
 uploadBtn.addEventListener('click', async () => {
@@ -153,11 +274,17 @@ uploadBtn.addEventListener('click', async () => {
       return;
     }
 
+    chatMessages = [];
+    renderChatMessages();
     setStatus(`Done: ${body.filename}`, 'ok');
     setPreview(body);
   } catch (err) {
     setStatus(`Network error: ${err.message}`, 'error');
   } finally {
     uploadBtn.disabled = false;
+    updateChatAvailability();
   }
 });
+
+updateChatAvailability();
+renderChatMessages();
