@@ -29,9 +29,13 @@ app = Flask(__name__, template_folder="templates")
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt"}
 
-N8N_WEBHOOK_URL: str = os.environ.get(
-    "N8N_WEBHOOK_URL",
-    "http://n8n:5678/webhook/document-intake",
+N8N_WEBHOOK_ANALYZE_URL: str = os.environ.get(
+    "N8N_WEBHOOK_ANALYZE_URL",
+    "http://n8n:5678/webhook-test/document-intake",
+)
+N8N_WEBHOOK_QUERY_URL: str = os.environ.get(
+    "N8N_WEBHOOK_QUERY_URL",
+    "http://n8n:5678/webhook-test/document-query",
 )
 N8N_TIMEOUT: int = int(os.environ.get("N8N_TIMEOUT", "60"))
 INCOMING_DOCS_DIR: str = os.environ.get("INCOMING_DOCS_DIR", "/home/node/incoming_docs")
@@ -214,7 +218,7 @@ def upload_file():
 
     try:
         webhook_response = http_client.post(
-            N8N_WEBHOOK_URL,
+            N8N_WEBHOOK_ANALYZE_URL,
             json={"filename": filename, "email": email},
             timeout=N8N_TIMEOUT,
         )
@@ -245,6 +249,54 @@ def upload_file():
             "email": email,
             "status": "ok",
             "saved_path": saved_path,
+            "result": webhook_response.text,
+            "content_type": response_content_type,
+        }
+    )
+
+@app.post("/document-query")
+def document_query():
+    filename = (request.form.get("filename") or "").strip()
+    if not filename:
+        return jsonify({"error": "Filename is required"}), 400
+    
+    query = (request.form.get("query") or "").strip()
+    if not query:
+        return jsonify({"error": "Query is required"}), 400
+
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        return jsonify({"error": f"Unsupported file type: {ext}"}), 415
+
+    try:
+        webhook_response = http_client.post(
+            N8N_WEBHOOK_QUERY_URL,
+            json={"filename": filename, "query": query},
+            timeout=N8N_TIMEOUT,
+        )
+        webhook_response.raise_for_status()
+    except http_client.exceptions.Timeout:
+        return jsonify({"error": "n8n webhook timed out"}), 504
+    except http_client.exceptions.RequestException as exc:
+        return jsonify({"error": "Webhook request failed", "details": str(exc)}), 502
+
+    response_content_type = webhook_response.headers.get("Content-Type", "")
+    if "application/json" in response_content_type:
+        try:
+            return jsonify(
+                {
+                    "query": query,
+                    "status": "ok",
+                    "result": webhook_response.json(),
+                }
+            )
+        except ValueError:
+            pass
+
+    return jsonify(
+        {
+            "query": query,
+            "status": "ok",
             "result": webhook_response.text,
             "content_type": response_content_type,
         }
