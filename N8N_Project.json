@@ -38,8 +38,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1776,
-        544
+        -1632,
+        512
       ],
       "id": "0566f89a-a5a9-4e94-bb85-1d9899e8aa27",
       "name": "If"
@@ -56,7 +56,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -2224,
+        -2560,
         544
       ],
       "id": "99c7dc3f-3eed-475f-b33d-03f9479648a8",
@@ -67,13 +67,13 @@
       "parameters": {
         "sessionIdType": "customKey",
         "sessionKey": "1",
-        "contextWindowLength": "={{ $('Webhook').item.json.headers['x-filename'] }}"
+        "contextWindowLength": "={{ $('Configure').item.json.body.filename }}"
       },
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -624,
-        544
+        -416,
+        496
       ],
       "id": "0bcf1b0d-8bc7-4514-82cc-c6b069a2e3cc",
       "name": "Simple Memory"
@@ -105,8 +105,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1552,
-        320
+        -1488,
+        352
       ],
       "id": "1709a432-34cc-43c1-8e59-7c2e1f429651",
       "name": "If1"
@@ -140,8 +140,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1552,
-        768
+        -1472,
+        720
       ],
       "id": "4c02e4e6-68fc-482e-8c9c-f3dbcf2e0588",
       "name": "If2"
@@ -159,7 +159,7 @@
             {
               "id": "90954020-e66b-46d1-afdd-93b85854c7df",
               "name": "=filename",
-              "value": "={{ $('Webhook').item.json.headers['x-filename'] }}",
+              "value": "={{ $('Configure').item.json['input file name'] }}",
               "type": "string"
             },
             {
@@ -217,7 +217,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        128,
+        336,
         176
       ],
       "id": "efe57eaa-345a-4e29-97ad-30c6a8cdc1d7",
@@ -231,8 +231,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1328,
-        672
+        -1184,
+        704
       ],
       "id": "4a416b0f-f998-4785-a0d9-aed47c7b4b30",
       "name": "proceed txt"
@@ -245,8 +245,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1328,
-        288
+        -1184,
+        272
       ],
       "id": "26fde79e-ae51-4ba1-83ac-bd88fa38b458",
       "name": "procced pdf",
@@ -267,8 +267,8 @@
       "type": "@n8n/n8n-nodes-langchain.guardrails",
       "typeVersion": 2,
       "position": [
-        -1104,
-        480
+        -960,
+        448
       ],
       "id": "543a9fca-d1a4-43cc-a327-6fadbb004163",
       "name": "Guardrails"
@@ -280,7 +280,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -944,
+        -832,
         816
       ],
       "id": "c023f436-6ba5-46e3-98aa-c14e698d5d39",
@@ -294,8 +294,8 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -368,
-        544
+        -240,
+        528
       ],
       "id": "c4f382d3-191f-40c7-8b12-9e3ae86be730",
       "name": "Structured Output Parser"
@@ -308,7 +308,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1328,
+        -1184,
         480
       ],
       "id": "0da88642-9b3b-40de-b45b-08ed326f5771",
@@ -332,7 +332,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        720,
+        928,
         432
       ],
       "id": "3141ae96-500c-49a7-a228-517269c0b439",
@@ -477,7 +477,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        416,
+        624,
         176
       ],
       "id": "c03049fa-e0d0-44cc-8adc-158833ea1422",
@@ -503,7 +503,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -752,
+        -544,
         544
       ],
       "id": "798074fb-081c-4bba-a9e0-bee7033cbd81",
@@ -514,17 +514,6 @@
           "name": "OpenAI account"
         }
       }
-    },
-    {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.toolThink",
-      "typeVersion": 1.1,
-      "position": [
-        -496,
-        544
-      ],
-      "id": "65a2062d-bf2f-4320-9e1f-b77e05ea52eb",
-      "name": "Think"
     },
     {
       "parameters": {
@@ -539,19 +528,19 @@
             {
               "id": "ff7b07b2-c375-4b56-ac89-d51f80e8f78a",
               "name": "recipient",
-              "value": "={{ $json.body.email }}",
+              "value": "={{ $('Webhook').item.json.body.email}}",
               "type": "string"
             },
             {
               "id": "f86ad24f-8ee2-4a0c-be01-9d02e35d49c9",
               "name": "output file name",
-              "value": "={{ $json.body.filename.replace('pdf','html') }}",
+              "value": "={{ $('Webhook').item.json.body.filename.replace('pdf','html') }}",
               "type": "string"
             },
             {
               "id": "fd4f796b-5b6e-42d7-aeab-a0bbd172f001",
               "name": "=input file name",
-              "value": "={{ $json.body.filename }}",
+              "value": "={{$('Webhook').item.json.body.filename  }}",
               "type": "string"
             }
           ]
@@ -563,8 +552,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2000,
-        544
+        -1808,
+        528
       ],
       "id": "afb96d10-4d9f-4c10-8c1a-0356d71cb5d4",
       "name": "Configure"
@@ -578,7 +567,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        720,
+        928,
         608
       ],
       "id": "19f927bd-a658-4cfe-aa70-198e968f1604",
@@ -597,7 +586,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        64,
+        272,
         704
       ],
       "id": "6b11ab65-ab77-40f1-8155-6468a531fad7",
@@ -622,7 +611,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -1120,
+        -976,
         640
       ],
       "id": "9d13e13b-5c0f-4fce-8651-70a5a732fcd1",
@@ -646,7 +635,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -640,
+        -432,
         320
       ],
       "id": "30b8d97f-e91e-492c-96fc-c58c0168e6f8",
@@ -664,8 +653,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -160,
-        416
+        0,
+        320
       ],
       "id": "666f2aa2-197a-48d9-9875-544f37f7f9ea",
       "name": "Enrich content"
@@ -679,11 +668,392 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        64,
+        272,
         528
       ],
       "id": "e56ad46a-47c0-4e77-9217-43ad5307c965",
       "name": "Summary"
+    },
+    {
+      "parameters": {
+        "content": "## Read file content and make Guardrails validations",
+        "height": 752,
+        "width": 1252,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1888,
+        192
+      ],
+      "typeVersion": 1,
+      "id": "ea1498d0-77f4-4d44-9ad3-b9ffcc379dec",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Analyze content and enrich",
+        "height": 752,
+        "width": 768,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -640,
+        192
+      ],
+      "typeVersion": 1,
+      "id": "37f8733d-8046-4a5b-8faa-0b2a2cebcf82",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Save to Google sheet, create summary ta save on disk and send as attachement to recipient email",
+        "height": 880,
+        "width": 1152,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        128,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "734c80b7-2f17-4859-a5b5-972a5aa22cf6",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        656,
+        624
+      ],
+      "id": "2dbad1de-016c-4acf-91bf-1e58d50720e3",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const html = item.json.text;\n  const filename = $('Configure').item.json['output file name'] || 'output.html';\n  const buffer = Buffer.from(html, 'utf8');\n  item.binary = item.binary || {};\n  item.binary.data = await this.helpers.prepareBinaryData(\n    buffer,\n    filename,\n    'text/html'\n  );\n}\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        432
+      ],
+      "id": "16b6a400-77d5-4907-ad80-050215476b7c",
+      "name": "Save to file"
+    },
+    {
+      "parameters": {
+        "html_content": "=<html>{{ $json.text }}</html>",
+        "output_filename": "",
+        "dynamic_params": {
+          "params": [
+            {
+              "key": "filename",
+              "value": "Summary.pdf"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-htmlcsstopdf.htmlcsstopdf",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -208
+      ],
+      "id": "d4239d97-428a-4fcb-9e86-16b5eac3bf9e",
+      "name": "Convert HTML to PDF",
+      "credentials": {
+        "htmlcsstopdfApi": {
+          "id": "HitEQRxZ2Yuylsxy",
+          "name": "HTML to PDF account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pdf_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        400,
+        -208
+      ],
+      "id": "7885ff6d-a024-494d-ba23-19b9f0e7087d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "## Convert summary to pdf and send to gmail",
+        "height": 368,
+        "width": 736
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "05cc86a0-15e3-4a3b-be28-645c14a16adf",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Configure').item.json.recipient }}",
+        "subject": "={{ $('Enrich content').item.json.output.classification + ', ' + $('Enrich content').item.json.output.company }}",
+        "emailType": "text",
+        "message": "={{'Link to Google Sheet: ' }}{{ $('Configure').item.json['google sheet link'] }}",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        -208
+      ],
+      "id": "a73f070f-e425-4638-8ce0-bb81597c1c28",
+      "name": "Send a message2",
+      "webhookId": "16090bfc-0a06-4ef9-8200-c7c5e32f1a80",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MExQ6DcvGPlc7HY8",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-project-index",
+          "mode": "list",
+          "cachedResultName": "n8n-project-index"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -448,
+        1040
+      ],
+      "id": "8b4bb38e-f98c-47f5-8249-081dc9502bdf",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "vJbcaABXR2o8Q5K8",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "dimensions": 512
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        1232
+      ],
+      "id": "9839d60d-36f5-4f4f-a2db-d57791cc3ceb",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        1152
+      ],
+      "id": "0b2eed45-fe5f-4b1c-ac2b-1dd1b31c887e",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        1312
+      ],
+      "id": "0a133087-0036-4a8d-b7e6-f2b1c5593f77",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "query-document",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1696,
+        1040
+      ],
+      "id": "e5bec62e-8db2-48a0-afd7-ccb09fad971d",
+      "name": "Webhook1",
+      "webhookId": "a8c3f57e-99ea-455a-bae6-772caffd63ec"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1408,
+        1040
+      ],
+      "id": "a90c626a-8c85-488a-ab9e-3e994e59ce21",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1552,
+        1248
+      ],
+      "id": "9b6b90e6-6097-4093-8203-fc172c5b7498",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1408,
+        1248
+      ],
+      "id": "fab2f11a-1eba-4acd-8a08-ad5d3f457875",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -1104,
+        1200
+      ],
+      "id": "8e59659f-f33a-4bbe-ac63-e89c3309b7c8",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-project-index",
+          "mode": "list",
+          "cachedResultName": "n8n-project-index"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -1328,
+        1392
+      ],
+      "id": "0adfd4bd-8fa5-4075-be28-6f776bc78ee3",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "vJbcaABXR2o8Q5K8",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1248,
+        1600
+      ],
+      "id": "88be0d7d-002f-4707-af4d-2d17fffb5b88",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -976,
+        1376
+      ],
+      "id": "16e2b4a6-0062-4a68-a356-7409fd47e23d",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
     },
     {
       "parameters": {
@@ -696,10 +1066,10 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
       "position": [
-        -2272,
-        1248
+        -2560,
+        2064
       ],
-      "id": "addcee7b-bdec-454b-a748-f06520712472",
+      "id": "b89f5445-b94b-490d-b55d-5e61dfff6aba",
       "name": "Schedule Trigger"
     },
     {
@@ -723,10 +1093,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -2048,
-        1248
+        -2336,
+        2064
       ],
-      "id": "9d94bb2a-639d-4701-9818-368620f8a9c2",
+      "id": "f5956b6f-3e53-41fe-95d6-921cd3423f6a",
       "name": "Get row(s) in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -752,10 +1122,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1600,
-        1248
+        -1888,
+        2064
       ],
-      "id": "f8934b48-9db1-4b71-a17a-48b0c23a2262",
+      "id": "22a3456d-fa6d-4470-893e-3c14119d1011",
       "name": "Edit Fields1"
     },
     {
@@ -785,10 +1155,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        -1824,
-        1248
+        -2112,
+        2064
       ],
-      "id": "129276a6-7883-43e9-8fca-51367e057811",
+      "id": "2f1b9ae2-09a1-41ba-a7f8-30bb19706bd6",
       "name": "Filter"
     },
     {
@@ -798,10 +1168,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1376,
-        1248
+        -1664,
+        2064
       ],
-      "id": "f3a095ac-5d6c-4839-9ca4-b8057a510fe4",
+      "id": "27cdbf4b-330a-4cfe-92e5-6a4c398408a9",
       "name": "Code in JavaScript"
     },
     {
@@ -814,10 +1184,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        -1152,
-        1248
+        -1440,
+        2064
       ],
-      "id": "7ee013ce-7203-4992-98bc-4854b6ed9b05",
+      "id": "38eca4ac-3f2e-47d4-adb5-82684852ef4e",
       "name": "Send a message1",
       "webhookId": "f511b263-fb12-4f18-9d8c-f439a0a1c810",
       "credentials": {
@@ -835,60 +1205,90 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -2336,
-        1088
+        -2624,
+        1904
       ],
       "typeVersion": 1,
-      "id": "0d9356ec-1c1d-4b79-ba90-26c04ba32e5c",
+      "id": "6374cdd4-9c93-4849-9073-d2d0cf7d09c0",
       "name": "Sticky Note"
     },
     {
       "parameters": {
-        "content": "## Read file content and make Guardrails validations",
-        "height": 752,
-        "width": 1520,
-        "color": 6
+        "content": "## RAG Load Data",
+        "height": 576,
+        "width": 784
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -2336,
-        192
+        -640,
+        992
       ],
       "typeVersion": 1,
-      "id": "ea1498d0-77f4-4d44-9ad3-b9ffcc379dec",
-      "name": "Sticky Note1"
+      "id": "60e2a38c-d0c3-4b45-ab92-adacc102c90d",
+      "name": "Sticky Note5"
     },
     {
       "parameters": {
-        "content": "## Analyze content and enrich",
+        "content": "## RAG Query Data",
         "height": 752,
-        "width": 768,
-        "color": 4
+        "width": 1008
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -816,
-        192
+        -1744,
+        992
       ],
       "typeVersion": 1,
-      "id": "37f8733d-8046-4a5b-8faa-0b2a2cebcf82",
-      "name": "Sticky Note2"
+      "id": "767c9f51-814a-4ecc-9a6e-eaecbe81a992",
+      "name": "Sticky Note6"
     },
     {
       "parameters": {
-        "content": "## Save to Google sheet, create summary ta save on disk and send as attachement to recipient email",
-        "height": 880,
-        "width": 1152,
-        "color": 3
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "430163cf-42a2-43dc-a018-936c66544c61",
+              "leftValue": "={{$json.isEmpty()}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.stickyNote",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
       "position": [
-        -48,
-        64
+        -2208,
+        544
       ],
-      "typeVersion": 1,
-      "id": "734c80b7-2f17-4859-a5b5-972a5aa22cf6",
-      "name": "Sticky Note3"
+      "id": "fcfa031d-8bd8-483a-8ca3-6cf2cffa0bf8",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/home/node/output_docs/{{ $('Webhook').item.json.body.filename.replace('pdf','html') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -2512,
+        768
+      ],
+      "id": "e34d30b6-9349-4315-8422-cac6b179a3f1",
+      "name": "Read/Write Files from Disk1"
     },
     {
       "parameters": {
@@ -897,109 +1297,94 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        448,
-        624
+        -2144,
+        768
       ],
-      "id": "2dbad1de-016c-4acf-91bf-1e58d50720e3",
-      "name": "Respond to Webhook"
+      "id": "6253620b-b806-4062-ad3d-cfa4fbea5a31",
+      "name": "Respond to Webhook1"
     },
     {
       "parameters": {
-        "jsCode": "for (const item of $input.all()) {\n  const html = item.json.text;\n  const filename = $('Configure').item.json['output file name'] || 'output.html';\n  const buffer = Buffer.from(html, 'utf8');\n  item.binary = item.binary || {};\n  item.binary.data = await this.helpers.prepareBinaryData(\n    buffer,\n    filename,\n    'text/html'\n  );\n}\nreturn $input.all();"
+        "jsCode": "const binaryData = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst htmlString = binaryData.toString('utf8');\n\nreturn [{\n  json: {\n    text: htmlString\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        432,
-        432
+        -2320,
+        768
       ],
-      "id": "16b6a400-77d5-4907-ad80-050215476b7c",
-      "name": "Save to file"
+      "id": "ac908f67-85bd-46fd-afac-b908236ac66b",
+      "name": "Code in JavaScript1"
     },
     {
       "parameters": {
-        "html_content": "=<html>{{ $json.text }}</html>",
-        "output_filename": "",
-        "dynamic_params": {
-          "params": [
+        "documentId": {
+          "__rl": true,
+          "value": "1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE",
+          "mode": "list",
+          "cachedResultName": "report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
             {
-              "key": "filename",
-              "value": "Summary.pdf"
+              "lookupColumn": "filename",
+              "lookupValue": "={{ $json.body.filename}}"
             }
           ]
-        }
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-htmlcsstopdf.htmlcsstopdf",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
       "position": [
-        0,
-        -208
+        -2400,
+        544
       ],
-      "id": "d4239d97-428a-4fcb-9e86-16b5eac3bf9e",
-      "name": "Convert HTML to PDF",
+      "id": "c5c8511c-fe32-4d6f-806d-d278f58ca9ab",
+      "name": "If file proceed already",
+      "alwaysOutputData": true,
       "credentials": {
-        "htmlcsstopdfApi": {
-          "id": "HitEQRxZ2Yuylsxy",
-          "name": "HTML to PDF account"
+        "googleSheetsOAuth2Api": {
+          "id": "3cf50rQQBIo12zeA",
+          "name": "Google Sheets account"
         }
       }
     },
     {
       "parameters": {
-        "url": "={{ $json.pdf_url }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        224,
-        -208
-      ],
-      "id": "7885ff6d-a024-494d-ba23-19b9f0e7087d",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "content": "## Convert summary to pdf and send to gmail"
+        "content": "## If file proceed return cashed version",
+        "height": 576,
+        "width": 720
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -32,
-        -400
+        -2608,
+        368
       ],
       "typeVersion": 1,
-      "id": "05cc86a0-15e3-4a3b-be28-645c14a16adf",
-      "name": "Sticky Note4"
+      "id": "9ec7cd20-ee01-40fa-9aec-e215377931a0",
+      "name": "Sticky Note7"
     },
     {
       "parameters": {
-        "sendTo": "={{ $('Configure').item.json.recipient }}",
-        "subject": "={{ $('Enrich content').item.json.output.classification + ', ' + $('Enrich content').item.json.output.company }}",
-        "emailType": "text",
-        "message": "={{'Link to Google Sheet: ' }}{{ $('Configure').item.json['google sheet link'] }}",
-        "options": {
-          "attachmentsUi": {
-            "attachmentsBinary": [
-              {}
-            ]
-          }
-        }
+        "options": {}
       },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
       "position": [
-        464,
-        -208
+        -1056,
+        1040
       ],
-      "id": "a73f070f-e425-4638-8ce0-bb81597c1c28",
-      "name": "Send a message2",
-      "webhookId": "16090bfc-0a06-4ef9-8200-c7c5e32f1a80",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "MExQ6DcvGPlc7HY8",
-          "name": "Gmail account"
-        }
-      }
+      "id": "2ad8dfa0-3276-49a0-965b-8a880cce0ba7",
+      "name": "Respond to Webhook2"
     }
   ],
   "pinData": {},
@@ -1026,7 +1411,7 @@
       "main": [
         [
           {
-            "node": "Configure",
+            "node": "If file proceed already",
             "type": "main",
             "index": 0
           }
@@ -1146,17 +1531,6 @@
         ]
       ]
     },
-    "Think": {
-      "ai_tool": [
-        [
-          {
-            "node": "Analyze document",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Configure": {
       "main": [
         [
@@ -1184,6 +1558,11 @@
         [
           {
             "node": "Analyze document",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Pinecone Vector Store",
             "type": "main",
             "index": 0
           }
@@ -1251,61 +1630,6 @@
         ]
       ]
     },
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "Get row(s) in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get row(s) in sheet": {
-      "main": [
-        [
-          {
-            "node": "Filter",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Send a message1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Save to file": {
       "main": [
         [
@@ -1343,6 +1667,233 @@
           }
         ]
       ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Configure",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If file proceed already": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1350,7 +1901,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "f0f05f2c-4f8a-4653-a55f-d7f3d3f79347",
+  "versionId": "53d4d317-d4f7-4b32-b0b6-c0f7d5ad3413",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f097b0f5ff1c01aa69571fafaa40e26daef8c6ae39d2132ff6f0ce3ce11299c2"
