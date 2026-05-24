@@ -21,6 +21,7 @@ const panelButtons = document.querySelectorAll('[data-panel]');
 
 let currentFile = null;
 let chatMessages = [];
+let documentMetadata = {};
 
 // --- panel state ---
 function updatePanelControls() {
@@ -171,9 +172,12 @@ function setPreview(body) {
 
 // --- chat helpers ---
 function normalizeChatResponse(body) {
-  const result = body?.result;
-  if (typeof result === 'string') return result;
+  let result = body?.result;
+  if (typeof result === 'string') {
+    try { result = JSON.parse(result); } catch { return result; }
+  }
   if (result && typeof result === 'object') {
+    if (typeof result.output === 'string') return result.output;
     if (typeof result.answer === 'string') return result.answer;
     if (typeof result.text === 'string') return result.text;
     if (typeof result.response === 'string') return result.response;
@@ -215,6 +219,12 @@ async function sendChatMessage() {
   const formData = new FormData();
   formData.append('filename', currentFile.name);
   formData.append('query', query);
+
+  const meta = documentMetadata[currentFile.name];
+  if (meta) {
+    formData.append('company', meta.company);
+    formData.append('year', meta.year);
+  }
 
   try {
     const res = await fetch('/document-query', { method: 'POST', body: formData });
@@ -278,6 +288,14 @@ uploadBtn.addEventListener('click', async () => {
     renderChatMessages();
     setStatus(`Done: ${body.filename}`, 'ok');
     setPreview(body);
+
+    const result = body.result || {};
+    if (result.company || result.year) {
+      documentMetadata[body.filename] = {
+        company: result.company || '',
+        year: result.year || '',
+      };
+    }
   } catch (err) {
     setStatus(`Network error: ${err.message}`, 'error');
   } finally {

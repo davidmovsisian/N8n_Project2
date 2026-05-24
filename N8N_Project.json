@@ -289,7 +289,7 @@
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"company\": \"string\",\n  \"classification\": \"string\",\n  \"summary\": \"string\",\n  \"entities\": {\n    \"people\": [\"string\"],\n    \"monetary_values\": [\n      {\n        \"label\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"geographic_sales\":[\n      {\n        \"region\": \"string\",\n        \"sales\": \"string\"\n      }\n    ],\n    \"financial_ratios\":[\n      {\n        \"ratio\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  },\n  \"sentiment\": {\n    \"score\": \"string\",\n    \"rationale\": \"string\"\n  },\n  \"action_items\": [\"string\"]\n}"
+        "inputSchema": "{\n  \"company\": \"string\",\n  \"year\": \"string\",\n  \"classification\": \"string\",\n  \"summary\": \"string\",\n  \"entities\": {\n    \"people\": [\"string\"],\n    \"monetary_values\": [\n      {\n        \"label\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"geographic_sales\":[\n      {\n        \"region\": \"string\",\n        \"sales\": \"string\"\n      }\n    ],\n    \"financial_ratios\":[\n      {\n        \"ratio\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  },\n  \"sentiment\": {\n    \"score\": \"string\",\n    \"rationale\": \"string\"\n  },\n  \"action_items\": [\"string\"]\n}"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
@@ -626,7 +626,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Analyze the following extracted text from a financial report and provide a structured JSON response. Do not include any markdown formatting, preamble, or postscript. Return ONLY the raw JSON object.\n\nRequirements:\n- company: full company name\n- classification: financial document type\n- summary: concise, maximum 200 characters\n- entities.people: list of key executives mentioned\n- entities.monetary_values: financial figures mentioned. list of objects with keys label -> Description of the line item (e.g., Total net sales), value -> Amount with currency symbol\n- entities.geographic_sales: list of sales per region, key -> region, value -> sales per region\n- entities.financial_ratios: list of financial ratios calculated from the financial statements(e.g., Net Profit Margin, Current Ratio, Debt-to-Equity). key -> name of financial ratio, value -> percentage or ratio value\n- sentiment.score: Positive, Neutral, or Negative\n- sentiment.rationale: concise, maximum 200 characters\n- action_items: exactly 3 concise items\n\nOutput JSON Schema:\n{\n  \"company\": \"string\",\n  \"classification\": \"string\",\n  \"summary\": \"string\",\n  \"entities\": {\n    \"people\": [\"string\"],\n    \"monetary_values\": [\n      {\n        \"label\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"geographic_sales\":[\n      {\n        \"region\": \"string\",\n        \"sales\": \"string\"\n      }\n    ],\n    \"financial_ratios\":[\n      {\n        \"ratio\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  },\n  \"sentiment\": {\n    \"score\": \"string\",\n    \"rationale\": \"string\"\n  },\n  \"action_items\": [\"string\"]\n}\n\nText:\n{{ $json.guardrailsInput }}",
+        "text": "=Analyze the following extracted text from a financial report and provide a structured JSON response. Do not include any markdown formatting, preamble, or postscript. Return ONLY the raw JSON object.\n\nRequirements:\n- company: full company name\n- year: year of report\n- classification: financial document type\n- summary: concise, maximum 200 characters\n- entities.people: list of key executives mentioned\n- entities.monetary_values: financial figures mentioned. list of objects with keys label -> Description of the line item (e.g., Total net sales), value -> Amount with currency symbol\n- entities.geographic_sales: list of sales per region, key -> region, value -> sales per region\n- entities.financial_ratios: list of financial ratios calculated from the financial statements(e.g., Net Profit Margin, Current Ratio, Debt-to-Equity). key -> name of financial ratio, value -> percentage or ratio value\n- sentiment.score: Positive, Neutral, or Negative\n- sentiment.rationale: concise, maximum 200 characters\n- action_items: exactly 3 concise items\n\nOutput JSON Schema:\n{\n  \"company\": \"string\",\n  \"year\": \"string\",\n  \"classification\": \"string\",\n  \"summary\": \"string\",\n  \"entities\": {\n    \"people\": [\"string\"],\n    \"monetary_values\": [\n      {\n        \"label\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"geographic_sales\":[\n      {\n        \"region\": \"string\",\n        \"sales\": \"string\"\n      }\n    ],\n    \"financial_ratios\":[\n      {\n        \"ratio\": \"string\",\n        \"value\": \"string\"\n      }\n    ]\n  },\n  \"sentiment\": {\n    \"score\": \"string\",\n    \"rationale\": \"string\"\n  },\n  \"action_items\": [\"string\"]\n}\n\nText:\n{{ $json.guardrailsInput }}",
         "hasOutputParser": true,
         "options": {
           "systemMessage": "You are an expert financial document extraction system. Be concise and follow the provided output schema exactly.\n"
@@ -729,8 +729,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        656,
-        624
+        768,
+        768
       ],
       "id": "2dbad1de-016c-4acf-91bf-1e58d50720e3",
       "name": "Respond to Webhook"
@@ -914,6 +914,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "query-document",
+        "responseMode": "responseNode",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -928,7 +929,11 @@
     },
     {
       "parameters": {
-        "options": {}
+        "promptType": "define",
+        "text": "={{ $json.body.query }}",
+        "options": {
+          "systemMessage": "You are an internal knowledge assistant.\nYou have access to a tool called prompting_information that searches the company knowledge base.\nThe knowledge base contains {{company}} financial and corporate information such as:\n\nAnnual reports\nProducts and services provided by company\nFinancial statements and net sales figures\nSEC filings and regulatory disclosures\nBusiness operations and supply chain information\nExecutive and corporate governance information\nRisk factors and legal proceedings\nCompany assets and segment information\n\nYour responsibility is to answer questions using this knowledge base whenever possible.\nRules\nIf the user asks about {{company}} financials, product performance, SEC filings, business operations, or any information from the {{year}} annual report, you must first use the prompting_information tool.\nWhen using the tool:\n\nSend the user's question as the search query.\nRetrieve the relevant information from the knowledge base.\n\nIf the tool returns relevant information:\n\nAnswer the user only using the information returned from the tool.\nDo not add assumptions or external knowledge.\n\nIf the tool returns no relevant information:\n\nRespond with: \"I couldn't find relevant information in the internal knowledge base.\"\n\nIf the user's request is not related to the {{ company}} {{year}} annual report, answer normally using your general knowledge.\nIf the user's request is ambiguous but might relate to {{ company}}  {{year}} report, use the prompting_information tool first.\nResponse Style\n\nBe clear and concise.\nPrefer bullet points when presenting structured information.\nQuote relevant details from the knowledge base when appropriate.\nDo not mention the internal tool or system behavior unless necessary."
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
@@ -976,17 +981,6 @@
       "name": "Simple Memory1"
     },
     {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
-      "typeVersion": 1.1,
-      "position": [
-        -1104,
-        1200
-      ],
-      "id": "8e59659f-f33a-4bbe-ac63-e89c3309b7c8",
-      "name": "Answer questions with a vector store"
-    },
-    {
       "parameters": {
         "pineconeIndex": {
           "__rl": true,
@@ -1013,7 +1007,9 @@
     },
     {
       "parameters": {
-        "options": {}
+        "options": {
+          "dimensions": 512
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
@@ -1231,7 +1227,7 @@
       "parameters": {
         "content": "## RAG Query Data",
         "height": 752,
-        "width": 1008
+        "width": 1120
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
@@ -1385,6 +1381,32 @@
       ],
       "id": "2ad8dfa0-3276-49a0-965b-8a880cce0ba7",
       "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool whenever a user asks about Annual reports, reports, Financial statements and net sales figures, SEC filings and regulatory disclosures, Business operations and supply chain information, Executive and corporate governance information, Risk factors and legal proceedings, Company assets and segment information.\n\nThe tool returns relevant records from the internal knowledge base that should be used to answer the user's question."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -1104,
+        1200
+      ],
+      "id": "8e59659f-f33a-4bbe-ac63-e89c3309b7c8",
+      "name": "prompting_information"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    company: $('Analyze document').first().json.output.company,\n    year: $('Analyze document').first().json.output.year,\n    text: $input.first().json.text,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        768
+      ],
+      "id": "cc0323c7-ffeb-4006-9336-7c235b1c2fe6",
+      "name": "Code in JavaScript2"
     }
   ],
   "pinData": {},
@@ -1618,12 +1640,12 @@
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Save to file",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Save to file",
+            "node": "Code in JavaScript2",
             "type": "main",
             "index": 0
           }
@@ -1734,22 +1756,11 @@
         ]
       ]
     },
-    "Answer questions with a vector store": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Pinecone Vector Store1": {
       "ai_vectorStore": [
         [
           {
-            "node": "Answer questions with a vector store",
+            "node": "prompting_information",
             "type": "ai_vectorStore",
             "index": 0
           }
@@ -1771,7 +1782,7 @@
       "ai_languageModel": [
         [
           {
-            "node": "Answer questions with a vector store",
+            "node": "prompting_information",
             "type": "ai_languageModel",
             "index": 0
           }
@@ -1894,6 +1905,28 @@
           }
         ]
       ]
+    },
+    "prompting_information": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1901,7 +1934,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "53d4d317-d4f7-4b32-b0b6-c0f7d5ad3413",
+  "versionId": "4e33ee27-bdc5-43fc-8ee0-f1ebc80a25c1",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f097b0f5ff1c01aa69571fafaa40e26daef8c6ae39d2132ff6f0ce3ce11299c2"

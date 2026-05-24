@@ -35,7 +35,7 @@ N8N_WEBHOOK_ANALYZE_URL: str = os.environ.get(
 )
 N8N_WEBHOOK_QUERY_URL: str = os.environ.get(
     "N8N_WEBHOOK_QUERY_URL",
-    "http://n8n:5678/webhook-test/document-query",
+    "http://n8n:5678/webhook-test/query-document",
 )
 N8N_TIMEOUT: int = int(os.environ.get("N8N_TIMEOUT", "60"))
 INCOMING_DOCS_DIR: str = os.environ.get("INCOMING_DOCS_DIR", "/home/node/incoming_docs")
@@ -268,10 +268,13 @@ def document_query():
     if ext not in ALLOWED_EXTENSIONS:
         return jsonify({"error": f"Unsupported file type: {ext}"}), 415
 
+    company = (request.form.get("company") or "").strip()
+    year = (request.form.get("year") or "").strip()
+
     try:
         webhook_response = http_client.post(
             N8N_WEBHOOK_QUERY_URL,
-            json={"filename": filename, "query": query},
+            json={"filename": filename, "query": query, "company": company, "year": year},
             timeout=N8N_TIMEOUT,
         )
         webhook_response.raise_for_status()
