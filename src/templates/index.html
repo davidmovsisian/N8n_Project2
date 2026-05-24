@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document Analyzer</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=4" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=5" />
 </head>
 <body>
   <main class="app">
@@ -37,6 +37,13 @@
       </form>
 
       <div id="status" class="status"></div>
+
+      <div class="uploaded-files-section">
+        <h2>Uploaded Files</h2>
+        <ul id="uploaded-files-list" class="uploaded-files-list">
+          <li class="uploaded-files-empty">No files uploaded yet.</li>
+        </ul>
+      </div>
     </section>
 
     <section class="workspace">
@@ -119,6 +126,6 @@
     </section>
   </main>
 
-  <script src="{{ url_for('static', filename='app.js') }}?v=4"></script>
+  <script src="{{ url_for('static', filename='app.js') }}?v=5"></script>
 </body>
 </html>

@@ -185,6 +185,54 @@ button:disabled {
   color: #b42318;
 }
 
+.uploaded-files-section {
+  margin-top: 18px;
+}
+
+.uploaded-files-section h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: #344054;
+}
+
+.uploaded-files-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.uploaded-files-empty {
+  color: #667085;
+  font-size: 14px;
+}
+
+.uploaded-file-item {
+  width: 100%;
+  text-align: left;
+  background: #f8fafc;
+  color: #1f2937;
+  border: 1px solid #d0d5dd;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.uploaded-file-item:hover {
+  background: #eef6ff;
+  border-color: #0a4d8c;
+  color: #0a4d8c;
+}
+
+.uploaded-file-item.active {
+  background: #0a4d8c;
+  border-color: #0a4d8c;
+  color: #ffffff;
+}
+
 .result-header,
 .panel-header {
   display: flex;
