@@ -90,7 +90,7 @@ downloadBtn.addEventListener('click', async () => {
 
 // --- file selection ---
 function updateChatAvailability() {
-  const enabled = Boolean(currentFile);
+  const enabled = Boolean(currentFile) || Boolean(currentSelectedDoc);
   chatInput.disabled = !enabled;
   sendChatBtn.disabled = !enabled;
 }
@@ -103,13 +103,14 @@ function setFile(file) {
 }
 
 function upsertUploadedDocument(filename, file) {
-  if (!filename || !file) return;
+  if (!filename) return;
   const existingIndex = uploadedDocuments.findIndex(doc => doc.filename === filename);
   if (existingIndex === -1) {
-    uploadedDocuments.push({ filename, file });
+    uploadedDocuments.push({ filename, file: file || null });
     return;
   }
-  uploadedDocuments[existingIndex] = { filename, file };
+  // Preserve existing file object if new one is absent
+  uploadedDocuments[existingIndex] = { filename, file: file || uploadedDocuments[existingIndex].file || null };
 }
 
 function updateCurrentSelectedDoc(filename) {
@@ -149,10 +150,15 @@ function renderUploadedFilesList() {
       button.classList.add('active');
     }
     button.addEventListener('click', async () => {
-      setFile(doc.file);
       updateCurrentSelectedDoc(doc.filename);
       renderUploadedFilesList();
-      await uploadAndAnalyzeFile(doc.file, { updateMetadata: false, selectedFilename: doc.filename });
+      updateChatAvailability();
+      if (doc.file) {
+        setFile(doc.file);
+        await uploadAndAnalyzeFile(doc.file, { updateMetadata: false, selectedFilename: doc.filename });
+      } else {
+        await reloadByFilename(doc.filename);
+      }
     });
     listItem.appendChild(button);
     uploadedFilesList.appendChild(listItem);
@@ -314,6 +320,31 @@ chatInput.addEventListener('keydown', event => {
   }
 });
 
+// --- reload by filename (for files loaded from server history) ---
+async function reloadByFilename(filename) {
+  setStatus('Loading…', 'busy');
+
+  const formData = new FormData();
+  formData.append('filename', filename);
+
+  try {
+    const res = await fetch('/reload-file', { method: 'POST', body: formData });
+    const body = await res.json();
+
+    if (!res.ok) {
+      setStatus(`Error: ${body.error || res.statusText}`, 'error');
+      return;
+    }
+
+    chatMessages = [];
+    renderChatMessages();
+    setStatus('', '');
+    setPreview(body);
+  } catch (err) {
+    setStatus(`Network error: ${err.message}`, 'error');
+  }
+}
+
 // --- upload ---
 async function uploadAndAnalyzeFile(file, options = {}) {
   const { updateMetadata = true, selectedFilename = null } = options;
@@ -350,7 +381,7 @@ async function uploadAndAnalyzeFile(file, options = {}) {
 
     chatMessages = [];
     renderChatMessages();
-    setStatus(`Done: ${body.filename}`, 'ok');
+    setStatus('', '');
     setPreview(body);
 
     upsertUploadedDocument(body.filename, file);
@@ -384,21 +415,25 @@ async function loadAllFilenames() {
     const res = await fetch('/all-filenames');
     if (!res.ok) return;
     const data = await res.json();
-    if (!Array.isArray(data) || !data.length) return;
 
-    data.forEach(item => {
-      const filename = Object.keys(item)[0];
-      const meta = item[filename] || {};
+    // Normalise to array regardless of single-object or array response
+    const items = Array.isArray(data) ? data : [data];
+    if (!items.length || !items[0].filename) return;
+
+    items.forEach(item => {
+      const filename = item.filename;
+      if (!filename) return;
       documentMetadata[filename] = {
         filename,
-        company: meta.company || '',
-        year: meta.year || '',
+        company: item.company || '',
+        year: String(item.year || ''),
       };
+      upsertUploadedDocument(filename, null);
     });
 
-    const firstFilename = Object.keys(data[0])[0];
-    updateCurrentSelectedDoc(firstFilename);
+    updateCurrentSelectedDoc(items[0].filename);
     renderUploadedFilesList();
+    updateChatAvailability();
   } catch (_err) {
     // silently ignore startup errors
   }

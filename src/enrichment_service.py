@@ -281,6 +281,29 @@ def upload_file():
         }
     )
 
+@app.post("/reload-file")
+def reload_file():
+    filename = (request.form.get("filename") or "").strip()
+    if not filename:
+        return jsonify({"error": "Filename is required"}), 400
+
+    safe_name = secure_filename(filename)
+    if not safe_name:
+        return jsonify({"error": "Invalid filename"}), 400
+
+    base = os.path.splitext(safe_name)[0]
+    output_filename = base + ".html"
+    file_path = os.path.join(OUTPUT_DOCS_DIR, output_filename)
+
+    if not os.path.isfile(file_path):
+        return jsonify({"error": f"File not found: {output_filename}"}), 404
+
+    with open(file_path, "r", encoding="utf-8") as fh:
+        html_content = fh.read()
+
+    return jsonify({"filename": safe_name, "status": "ok", "result": html_content})
+
+
 @app.post("/document-query")
 def document_query():
     filename = (request.form.get("filename") or "").strip()
