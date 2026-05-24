@@ -58,6 +58,7 @@ A lightweight Python service is available at `src/enrichment_service.py`.
 - `POST /enrich` — enriches Gemini/LLM JSON output with metadata
 - `GET /health` — returns exactly `{"status": "ok"}`
 - `GET /categories` — returns available document categories
+- `GET /all-filenames` — proxies the n8n webhook to return all known document filenames with metadata
 - `POST /sensitivity` — returns `public`, `internal`, or `confidential`
 
 ### Sample payload
