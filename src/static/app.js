@@ -378,6 +378,33 @@ uploadBtn.addEventListener('click', async () => {
   await uploadAndAnalyzeFile(currentFile, { updateMetadata: true });
 });
 
+// --- startup: load all known filenames ---
+async function loadAllFilenames() {
+  try {
+    const res = await fetch('/all-filenames');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!Array.isArray(data) || !data.length) return;
+
+    data.forEach(item => {
+      const filename = Object.keys(item)[0];
+      const meta = item[filename] || {};
+      documentMetadata[filename] = {
+        filename,
+        company: meta.company || '',
+        year: meta.year || '',
+      };
+    });
+
+    const firstFilename = Object.keys(data[0])[0];
+    updateCurrentSelectedDoc(firstFilename);
+    renderUploadedFilesList();
+  } catch (_err) {
+    // silently ignore startup errors
+  }
+}
+
 updateChatAvailability();
 renderChatMessages();
 renderUploadedFilesList();
+loadAllFilenames();

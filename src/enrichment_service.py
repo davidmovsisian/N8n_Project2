@@ -37,6 +37,10 @@ N8N_WEBHOOK_QUERY_URL: str = os.environ.get(
     "N8N_WEBHOOK_QUERY_URL",
     "http://n8n:5678/webhook-test/query-document",
 )
+N8N_WEBHOOK_ALL_FILENAMES_URL: str = os.environ.get(
+    "N8N_WEBHOOK_ALL_FILENAMES_URL",
+    "http://n8n:5678/webhook-test/all-filenames",
+)
 N8N_TIMEOUT: int = int(os.environ.get("N8N_TIMEOUT", "60"))
 INCOMING_DOCS_DIR: str = os.environ.get("INCOMING_DOCS_DIR", "/home/node/incoming_docs")
 OUTPUT_DOCS_DIR: str = os.environ.get("OUTPUT_DOCS_DIR", "/home/node/output_docs")
@@ -170,6 +174,29 @@ def health():
 @app.get("/categories")
 def categories():
     return jsonify({"categories": CATEGORIES})
+
+
+@app.get("/all-filenames")
+def all_filenames():
+    try:
+        webhook_response = http_client.get(
+            N8N_WEBHOOK_ALL_FILENAMES_URL,
+            timeout=N8N_TIMEOUT,
+        )
+        webhook_response.raise_for_status()
+    except http_client.exceptions.Timeout:
+        return jsonify({"error": "n8n webhook timed out"}), 504
+    except http_client.exceptions.RequestException:
+        return jsonify({"error": "Webhook request failed"}), 502
+
+    response_content_type = webhook_response.headers.get("Content-Type", "")
+    if "application/json" in response_content_type:
+        try:
+            return jsonify(webhook_response.json())
+        except ValueError:
+            pass
+
+    return jsonify({"error": "Unexpected response from webhook", "content_type": response_content_type}), 502
 
 
 @app.post("/sensitivity")
