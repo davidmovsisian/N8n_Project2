@@ -18,10 +18,13 @@ const resultPanel = document.getElementById('result-panel');
 const hideChatbotBtn = document.getElementById('hide-chatbot-btn');
 const hideResultBtn = document.getElementById('hide-result-btn');
 const panelButtons = document.querySelectorAll('[data-panel]');
+const uploadedFilesList = document.getElementById('uploaded-files-list');
 
 let currentFile = null;
 let chatMessages = [];
 let documentMetadata = {};
+let currentSelectedDoc = null;
+let uploadedDocuments = [];
 
 // --- panel state ---
 function updatePanelControls() {
@@ -97,6 +100,63 @@ function setFile(file) {
   selectedFile.textContent = file ? `Selected: ${file.name}` : '';
   uploadBtn.disabled = !file;
   updateChatAvailability();
+}
+
+function upsertUploadedDocument(filename, file) {
+  if (!filename || !file) return;
+  const existingIndex = uploadedDocuments.findIndex(doc => doc.filename === filename);
+  if (existingIndex === -1) {
+    uploadedDocuments.push({ filename, file });
+    return;
+  }
+  uploadedDocuments[existingIndex] = { filename, file };
+}
+
+function updateCurrentSelectedDoc(filename) {
+  if (!filename) {
+    currentSelectedDoc = null;
+    return;
+  }
+  const meta = documentMetadata[filename] || {};
+  currentSelectedDoc = {
+    filename,
+    metadata: {
+      company: meta.company || '',
+      year: meta.year || '',
+    },
+  };
+}
+
+function renderUploadedFilesList() {
+  if (!uploadedFilesList) return;
+  uploadedFilesList.innerHTML = '';
+
+  if (!uploadedDocuments.length) {
+    const emptyItem = document.createElement('li');
+    emptyItem.className = 'uploaded-files-empty';
+    emptyItem.textContent = 'No files uploaded yet.';
+    uploadedFilesList.appendChild(emptyItem);
+    return;
+  }
+
+  uploadedDocuments.forEach(doc => {
+    const listItem = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'uploaded-file-item';
+    button.textContent = doc.filename;
+    if (currentSelectedDoc?.filename === doc.filename) {
+      button.classList.add('active');
+    }
+    button.addEventListener('click', async () => {
+      setFile(doc.file);
+      updateCurrentSelectedDoc(doc.filename);
+      renderUploadedFilesList();
+      await uploadAndAnalyzeFile(doc.file, { updateMetadata: false, selectedFilename: doc.filename });
+    });
+    listItem.appendChild(button);
+    uploadedFilesList.appendChild(listItem);
+  });
 }
 
 fileInput.addEventListener('change', () => setFile(fileInput.files[0] || null));
@@ -209,7 +269,9 @@ function addChatMessage(role, text) {
 
 async function sendChatMessage() {
   const query = (chatInput.value || '').trim();
-  if (!currentFile || !query) return;
+  const selectedDoc = currentSelectedDoc;
+  const filename = selectedDoc?.filename || currentFile?.name;
+  if (!filename || !query) return;
 
   addChatMessage('user', query);
   chatInput.value = '';
@@ -217,10 +279,10 @@ async function sendChatMessage() {
   sendChatBtn.disabled = true;
 
   const formData = new FormData();
-  formData.append('filename', currentFile.name);
+  formData.append('filename', filename);
   formData.append('query', query);
 
-  const meta = documentMetadata[currentFile.name];
+  const meta = selectedDoc?.metadata;
   if (meta) {
     formData.append('company', meta.company);
     formData.append('year', meta.year);
@@ -253,8 +315,10 @@ chatInput.addEventListener('keydown', event => {
 });
 
 // --- upload ---
-uploadBtn.addEventListener('click', async () => {
-  if (!currentFile) return;
+async function uploadAndAnalyzeFile(file, options = {}) {
+  const { updateMetadata = true, selectedFilename = null } = options;
+  if (!file) return;
+
   const email = (emailInput?.value || '').trim();
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email) {
@@ -272,7 +336,7 @@ uploadBtn.addEventListener('click', async () => {
   setStatus('Uploading…', 'busy');
 
   const formData = new FormData();
-  formData.append('file', currentFile);
+  formData.append('file', file);
   formData.append('email', email);
 
   try {
@@ -289,20 +353,31 @@ uploadBtn.addEventListener('click', async () => {
     setStatus(`Done: ${body.filename}`, 'ok');
     setPreview(body);
 
-    const result = body.result || {};
-    if (result.company || result.year) {
+    upsertUploadedDocument(body.filename, file);
+
+    if (updateMetadata) {
+      const result = body.result || {};
       documentMetadata[body.filename] = {
+        filename: body.filename,
         company: result.company || '',
         year: result.year || '',
       };
     }
+
+    updateCurrentSelectedDoc(selectedFilename || body.filename);
+    renderUploadedFilesList();
   } catch (err) {
     setStatus(`Network error: ${err.message}`, 'error');
   } finally {
     uploadBtn.disabled = false;
     updateChatAvailability();
   }
+}
+
+uploadBtn.addEventListener('click', async () => {
+  await uploadAndAnalyzeFile(currentFile, { updateMetadata: true });
 });
 
 updateChatAvailability();
 renderChatMessages();
+renderUploadedFilesList();
