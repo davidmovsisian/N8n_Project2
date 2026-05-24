@@ -932,7 +932,7 @@
         "promptType": "define",
         "text": "={{ $json.body.query }}",
         "options": {
-          "systemMessage": "You are an internal knowledge assistant.\nYou have access to a tool called prompting_information that searches the company knowledge base.\nThe knowledge base contains {{company}} financial and corporate information such as:\n\nAnnual reports\nProducts and services provided by company\nFinancial statements and net sales figures\nSEC filings and regulatory disclosures\nBusiness operations and supply chain information\nExecutive and corporate governance information\nRisk factors and legal proceedings\nCompany assets and segment information\n\nYour responsibility is to answer questions using this knowledge base whenever possible.\nRules\nIf the user asks about {{company}} financials, product performance, SEC filings, business operations, or any information from the {{year}} annual report, you must first use the prompting_information tool.\nWhen using the tool:\n\nSend the user's question as the search query.\nRetrieve the relevant information from the knowledge base.\n\nIf the tool returns relevant information:\n\nAnswer the user only using the information returned from the tool.\nDo not add assumptions or external knowledge.\n\nIf the tool returns no relevant information:\n\nRespond with: \"I couldn't find relevant information in the internal knowledge base.\"\n\nIf the user's request is not related to the {{ company}} {{year}} annual report, answer normally using your general knowledge.\nIf the user's request is ambiguous but might relate to {{ company}}  {{year}} report, use the prompting_information tool first.\nResponse Style\n\nBe clear and concise.\nPrefer bullet points when presenting structured information.\nQuote relevant details from the knowledge base when appropriate.\nDo not mention the internal tool or system behavior unless necessary."
+          "systemMessage": "=You are an internal knowledge assistant.\nYou have access to a tool called prompting_information that searches the company knowledge base.\nThe knowledge base contains {{company}} financial and corporate information such as:\n\nAnnual reports\nProducts and services provided by company\nFinancial statements and net sales figures\nSEC filings and regulatory disclosures\nBusiness operations and supply chain information\nExecutive and corporate governance information\nRisk factors and legal proceedings\nCompany assets and segment information\n\nYour responsibility is to answer questions using this knowledge base whenever possible.\nRules\nIf the user asks about {{company}} financials, product performance, SEC filings, business operations, or any information from the {{year}} annual report, you must first use the prompting_information tool.\nWhen using the tool:\n\nSend the user's question as the search query.\nRetrieve the relevant information from the knowledge base.\n\nIf the tool returns relevant information:\n\nAnswer the user only using the information returned from the tool.\nDo not add assumptions or external knowledge.\n\nIf the tool returns no relevant information:\n\nRespond with: \"I couldn't find relevant information in the internal knowledge base.\"\n\nIf the user's request is not related to the {{ company}} {{year}} annual report, answer normally using your general knowledge.\nIf the user's request is ambiguous but might relate to {{ company}}  {{year}} report, use the prompting_information tool first.\nResponse Style\n\nBe clear and concise.\nPrefer bullet points when presenting structured information.\nQuote relevant details from the knowledge base when appropriate.\nDo not mention the internal tool or system behavior unless necessary."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -970,7 +970,10 @@
       }
     },
     {
-      "parameters": {},
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.filename }}"
+      },
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
@@ -1212,11 +1215,11 @@
       "parameters": {
         "content": "## RAG Load Data",
         "height": 576,
-        "width": 784
+        "width": 768
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -640,
+        -624,
         992
       ],
       "typeVersion": 1,
@@ -1227,7 +1230,7 @@
       "parameters": {
         "content": "## RAG Query Data",
         "height": 752,
-        "width": 1120
+        "width": 944
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
@@ -1934,7 +1937,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "4e33ee27-bdc5-43fc-8ee0-f1ebc80a25c1",
+  "versionId": "586c2682-f713-4e06-92d5-88328a1b803c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f097b0f5ff1c01aa69571fafaa40e26daef8c6ae39d2132ff6f0ce3ce11299c2"
