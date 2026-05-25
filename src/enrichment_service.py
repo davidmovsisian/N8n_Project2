@@ -314,10 +314,6 @@ def document_query():
     if not query:
         return jsonify({"error": "Query is required"}), 400
 
-    ext = os.path.splitext(filename)[1].lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        return jsonify({"error": f"Unsupported file type: {ext}"}), 415
-
     company = (request.form.get("company") or "").strip()
     year = (request.form.get("year") or "").strip()
 
