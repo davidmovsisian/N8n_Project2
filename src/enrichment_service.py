@@ -144,23 +144,22 @@ def enrich_payload(payload: dict[str, Any]) -> dict[str, Any]:
     sensitivity = classify_sensitivity(payload)
     confidence_adjustment = _confidence_adjustment(output)
 
-    routing_tags = []
+    routing_tag = None
     if sensitivity == "confidential":
-        routing_tags.append("escalate")
+        routing_tag = "escalate"
     if confidence_adjustment < 0 or not classification:
-        routing_tags.append("needs-review")
+        routing_tag = "needs-review"
     else:
-        routing_tags.append("auto-approved")
+        routing_tag = "auto-approved"       
 
     return {
-        "output": output,
-        "metadata": {
+            "metadata": {
             "document_id": str(uuid.uuid4()),
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "category": classification,
             "department": _department_for_classification(classification),
             "sensitivity": sensitivity,
-            "routing_tags": routing_tags,
+            "routing_tag": routing_tag,
             "confidence_adjustment": confidence_adjustment,
         },
     }

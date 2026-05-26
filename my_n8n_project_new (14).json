@@ -1,0 +1,1161 @@
+{
+  "name": "my_n8n_project_new",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d683c598-69de-412e-aadc-6cdbe096bfe0",
+              "leftValue": "={{$json[\"input file name\"].split(\".\").pop() }}",
+              "rightValue": "=pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "4aa85571-7717-47b9-b15d-70ab5c39b4bb",
+              "leftValue": "={{$json[\"input file name\"].split(\".\").pop() }}",
+              "rightValue": "docx",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "f64e844f-a68e-4b3c-9e7c-5f3f3289d53f",
+              "leftValue": "={{$json[\"input file name\"].split(\".\").pop() }}",
+              "rightValue": "txt",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4192,
+        2720
+      ],
+      "id": "fb71d27c-3f37-43f5-bbb9-c542f0115498",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "document-intake",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -4624,
+        2720
+      ],
+      "id": "0103f02c-85c1-43f8-ac92-774380cd7062",
+      "name": "Webhook",
+      "webhookId": "bc04ec10-5db2-47cc-adc8-2c858e1dfaae"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.text }}",
+        "guardrails": {
+          "topicalAlignment": {
+            "value": {
+              "threshold": 0.7,
+              "prompt": "You are a financial controller AI. \n\nSCOPE:\n- The text MUST contain evidence of earnings summaries, budget proposals, expense reports.\n- To be considered ON-TOPIC, the text must explicitly contain or directly reference one of the following financial artifacts:\n   Earnings Summaries: Revenue reports, profit/loss statements, quarterly/annual financial results, or income summaries.\n   Budget Proposals: Projected departmental spend, resource allocation requests, or future budget drafts with line-item estimates.\n   Expense Reports: Detailed lists of employee reimbursements, corporate card statements, or compiled business expenditures.\n- The text is OFF-TOPIC if it falls into any of the following categories, even if it mentions money:\n    General Transactions/Invoices: Individual subscription renewals, standalone utility bills, one-off payment receipts, or attached invoices that are not part of a broader expense report or budget proposal.\n    Marketing & Newsletters: Industry updates, promotional offers, or vendor pitches without an active, authorized internal transaction.\n    Personal Conversations: Casual team chats, personal loan discussions, or non-business financial chatter.\n\nDetermine if the text stays within the defined business scope. Flag any content\nthat strays from the allowed topics.\n"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        -3792,
+        2544
+      ],
+      "id": "e01b2f9a-3e95-4e7c-8d34-a4190a3b3824",
+      "name": "Guardrails"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -3664,
+        2912
+      ],
+      "id": "99333b9a-76bf-4004-95fa-74017f14e540",
+      "name": "Error Respond"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3408,
+        2720
+      ],
+      "id": "0eb7ed5b-6674-425b-8eab-ade358f337e3",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1132df71-46a4-481e-b5e2-d9913b5f8e13",
+              "name": "google sheet link",
+              "value": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit?gid=0#gid=0",
+              "type": "string"
+            },
+            {
+              "id": "ff7b07b2-c375-4b56-ac89-d51f80e8f78a",
+              "name": "recipient",
+              "value": "={{ $('Webhook').item.json.body.email}}",
+              "type": "string"
+            },
+            {
+              "id": "f86ad24f-8ee2-4a0c-be01-9d02e35d49c9",
+              "name": "output file name",
+              "value": "={{ $('Webhook').item.json.body.filename.split('.')[0]+'.html'}}",
+              "type": "string"
+            },
+            {
+              "id": "fd4f796b-5b6e-42d7-aeab-a0bbd172f001",
+              "name": "=input file name",
+              "value": "={{$('Webhook').item.json.body.filename  }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "=all",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4416,
+        2720
+      ],
+      "id": "48429219-1a15-4153-b296-8890e92f4c50",
+      "name": "Configure"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3808,
+        2736
+      ],
+      "id": "b544c1dd-75d2-4e6e-9842-5c26a4f3b0a6",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following extracted text from a financial report.\n{{ $json.guardrailsInput }}\n\n##Order of execution:##\n\nStep 1. Analyze the extracted text and create an initial report as a JSON STRUCTURED object with the following fields:\n  - company: full company name\n  - year: year of report\n  - classification: financial document type\n  - summary: concise, maximum 200 characters\n  - entities.people: list of key executives mentioned\n  - entities.monetary_values: list of objects with keys:\n      label -> description of the line item (e.g., \"Total net sales\")\n      value -> amount with currency symbol\n  - entities.geographic_sales: object where key = region, value = net sales for that region\n  - entities.financial_ratios: list of objects with keys:\n      name -> name of the financial ratio (e.g., \"Net Profit Margin\")\n      value -> percentage or ratio value\n  - sentiment.score: exactly one of: Positive, Neutral, or Negative\n  - sentiment.rationale: concise, maximum 200 characters\n  - action_items: exactly 3 concise string items\n\nStep 2. Call enrichment_tool EXACTLY ONCE, passing the full JSON object from Step 1.\n  The enrichment_tool returns a JSON object under metadata key. Merge returned JSON object into your working object.\n  Example structure after merge:\n  {\n    \"company\": \"...\",\n    ...\n    \"metadata\": { \"document_id\": \"...\", ... } \n  }\n\nStep 3. Generate an HTML report of the full analysis.\n\t1. Executive Summary – 3–4 sentence overview\n\t2. Key Financial Highlights – bullet points on top metrics\n\t3. Geographic Breakdown – brief narrative on sales by region  \n\t4. Risks & Watch Items – based on the action items\n\t5. Sentiment – overall tone and rationale\n\t6. Use clear headings, bullet points, and tables where appropriate to ensure the output is professional and easy to scan.\n\tStore this as your working HTML string for use in Step 4.\n\nStep 4. Call assistant tool EXACTLY ONCE with a JSON object containing two keys:\n\t{\n\t  \"sheet_row\": {\n\t\t\"document_id\":      metadata.document_id,\n\t\t\"company\":          company,\n\t\t\"year\":             year (as a string),\n\t\t\"filename\":         {{ $('Configure').item.json['input file name'] }},\n\t\t\"processed_at\":     metadata.timestamp,\n\t\t\"classification\":   classification,\n\t\t\"sentiment\":        sentiment.score only,\n\t\t\"confidence_score\": metadata.confidence_adjustment (as a string),\n\t\t\"summary\":          summary,\n\t\t\"routing_tag\":      metadata.routing_tag,\n\t\t\"sensitivity\":      metadata.sensitivity,\n\t\t\"action_items\":     the 3 action items joined by \" | \"\n\t  },\n\t  \"html_report\": the complete HTML string generated in Step 3\n\t}\nDo not nest objects inside sheet_row. Every sheet_row value must be a plain string.\n",
+        "options": {
+          "systemMessage": "=You are the financial documentation analyst and a cost-aware router.\n\nYou have access to the following tools:\n1. assistant tool: send email, append row to Google Sheet, save analysis.\n2. enrichment_tool: HTTP tool to enrich the analysis with business-specific metadata.\n\nAfter completing all steps, output ONLY a valid JSON object with exactly these three keys:\n{\n  \"company\": \"<full company name>\",\n  \"year\": \"<year as string>\",\n  \"text\": \"<the complete HTML string from Step 3>\"\n}\n\nRules:\n- Do not include any markdown formatting, preamble, or postscript.\n- Do not add any explanation.\n- Do not call enrichment_tool more than once.\n- Do not call assistant more than once.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -3296,
+        2528
+      ],
+      "id": "7c386bef-126a-48c3-ac57-66d874017dcd",
+      "name": "Analyze document"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://enrichment-service:8000/enrich",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $fromAI('PAYLOAD', `The full JSON report object from Step 1`, 'json') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -2800,
+        2736
+      ],
+      "id": "3eb0036f-c069-42d1-8508-85c01f6025ab",
+      "name": "enrichment_tool"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3104,
+        3024
+      ],
+      "id": "95fc3574-af38-45fd-a048-43518eb5d6bb",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -2688,
+        2528
+      ],
+      "id": "b27194e0-3793-4a08-b045-137db19aa0f6",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "query-document",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2048,
+        1936
+      ],
+      "id": "7786d67a-368d-43df-a8bd-26d3ed810d4f",
+      "name": "Webhook1",
+      "webhookId": "a8c3f57e-99ea-455a-bae6-772caffd63ec"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.query }}",
+        "options": {
+          "systemMessage": "=You are an internal knowledge assistant.\nYou have access to a tool called prompting_information that searches the company knowledge base.\nThe knowledge base contains {{$json.body.company}} financial and corporate information such as:\n\nAnnual report for year {{ $json.body.year }}\nProducts and services provided by company\nFinancial statements and net sales figures\nSEC filings and regulatory disclosures\nBusiness operations and supply chain information\nExecutive and corporate governance information\nRisk factors and legal proceedings\nCompany assets and segment information\n\nYour responsibility is to answer questions using this knowledge base whenever possible.\nRules\nIf the user asks about {{$json.body.company}} financials, product performance, SEC filings, business operations, or any information from the {{$json.body.year}} annual report, you must first use the prompting_information tool.\nWhen using the tool:\n\nSend the user's question as the search query.\nRetrieve the relevant information from the knowledge base.\n\nIf the tool returns relevant information:\n\nAnswer the user only using the information returned from the tool.\nDo not add assumptions or external knowledge.\n\nIf the tool returns no relevant information:\n\nRespond with: \"I couldn't find relevant information in the internal knowledge base.\"\n\nIf the user's request is not related to the {{$json.body.company}} {{$json.body.year}} annual report, answer normally using your general knowledge.\nIf the user's request is ambiguous but might relate to {{$json.body.company}}  {{$json.body.year}} report, use the prompting_information tool first.\nResponse Style\n\nBe clear and concise.\nPrefer bullet points when presenting structured information.\nQuote relevant details from the knowledge base when appropriate.\nDo not mention the internal tool or system behavior unless necessary."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1760,
+        1936
+      ],
+      "id": "3fe68898-46be-4263-9d8c-c48586b7ed7c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.filename }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1760,
+        2144
+      ],
+      "id": "867519a8-dcd7-4afb-adf7-233c2784b150",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-project-index",
+          "mode": "list",
+          "cachedResultName": "n8n-project-index"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -1680,
+        2288
+      ],
+      "id": "091d333f-54d8-4a9b-a130-e7a8c833243d",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "vJbcaABXR2o8Q5K8",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "dimensions": 512
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1600,
+        2496
+      ],
+      "id": "b82e45f9-0cf5-4423-8823-df9e88efdb87",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1328,
+        2272
+      ],
+      "id": "fc346f78-0657-4329-9434-7b378f877a9c",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## RAG Query Data",
+        "height": 752,
+        "width": 944
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2096,
+        1888
+      ],
+      "typeVersion": 1,
+      "id": "d6879f0e-e7f2-4d06-ad60-f31da9fbe569",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -1408,
+        1936
+      ],
+      "id": "8d764e45-529e-4349-aaf1-a7b456fb62ad",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool whenever a user asks about Annual reports, reports, Financial statements and net sales figures, SEC filings and regulatory disclosures, Business operations and supply chain information, Executive and corporate governance information, Risk factors and legal proceedings, Company assets and segment information.\n\nThe tool returns relevant records from the internal knowledge base that should be used to answer the user's question."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -1456,
+        2096
+      ],
+      "id": "cc0557f9-562d-4b3e-9013-040ea4c28853",
+      "name": "prompting_information"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1904,
+        2144
+      ],
+      "id": "f184c89a-5767-45f8-a834-efdb0d3b28a3",
+      "name": "OpenAI Chat Model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-project-index",
+          "mode": "list",
+          "cachedResultName": "n8n-project-index"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -3552,
+        1984
+      ],
+      "id": "f5e61829-30f7-4758-b01e-5a0fc2c49b37",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "vJbcaABXR2o8Q5K8",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "dimensions": 512
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -3552,
+        2192
+      ],
+      "id": "07610f3a-2b1d-4885-9a71-cfef552f2a6b",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Gtv09d2jbDOyqJ4y",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -3424,
+        2192
+      ],
+      "id": "fa01c2e8-36d1-4aae-bd90-f1c051e86d38",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        -3264,
+        2320
+      ],
+      "id": "7b32f757-722e-478d-ad03-b703d9cdccfd",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "toolDescription": "assistant tool: Use this tool to send email, append row to Google Sheet.",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "You are a dispatch assistant. You will receive a JSON object with two keys: \n\"sheet_row\" and \"html_report\".\n\n1. Call google_sheet_tool ONCE using all fields from \"sheet_row\".\n3. Call gmail_tool ONCE to send a confirmation email.\n   - Send to the recipient configured in the workflow.\n   - Subject: \"Financial Analysis Report – <company> <year>\"\n     (use sheet_row.company and sheet_row.year)\n   - Message body: the full HTML content from \"html_report\".\n\nDo not skip any step. Do not call any tool more than once"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        -3104,
+        2848
+      ],
+      "id": "47d76e8f-b7ac-4c5c-b2c0-1d81d06a3bbd",
+      "name": "assistant"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Append row in sheet in Google Sheets",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE",
+          "mode": "list",
+          "cachedResultName": "report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "document_id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('document_id', 'document_id from enrichment metadata', 'string') }}",
+            "company": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('company', 'Full company name', 'string') }}",
+            "year": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('year', 'Year of the report as a string', 'string') }}",
+            "filename": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('filename', 'Original input filename', 'string') }}",
+            "processed_at": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('processed_at', 'Timestamp from enrichment metadata', 'string') }}",
+            "classification": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('classification', 'Financial document type', 'string') }}",
+            "sentiment": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('sentiment', 'Sentiment score only: Positive, Neutral, or Negative', 'string') }}",
+            "confidence_score": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('confidence_score', 'confidence_adjustment from enrichment metadata as a string', 'string') }}",
+            "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('summary', 'Concise summary of the report', 'string') }}",
+            "routing_tag": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('routing_tag', 'First routing tag from enrichment metadata', 'string') }}",
+            "sensitivity": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('sensitivity', 'Sensitivity level from enrichment metadata', 'string') }}",
+            "action_items": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('action_items', 'Three action items joined by pipe separator', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "document_id",
+              "displayName": "document_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "year",
+              "displayName": "year",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "processed_at",
+              "displayName": "processed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "classification",
+              "displayName": "classification",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sentiment",
+              "displayName": "sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence_score",
+              "displayName": "confidence_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "routing_tag",
+              "displayName": "routing_tag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sensitivity",
+              "displayName": "sensitivity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "action_items",
+              "displayName": "action_items",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -2848,
+        2944
+      ],
+      "id": "3dd884a9-49a3-41d2-b80f-a2a9ba53ff0a",
+      "name": "google_sheet_tool",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3cf50rQQBIo12zeA",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$('Configure').item.json.recipient}}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        -2736,
+        2944
+      ],
+      "id": "7b657a1f-2d1c-4cb8-99a9-7fce1181bddf",
+      "name": "gmail_tool",
+      "webhookId": "566d2b14-6aba-4f55-91aa-7d14f5613220",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MExQ6DcvGPlc7HY8",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "import fitz\nimport docx\n\nfilename = f'/home/node/incoming_docs/{_items[0][\"json\"][\"input file name\"]}'\next = filename.rsplit('.', 1)[-1].lower()\n\nif ext == 'txt':\n    with open(filename, 'r', encoding='utf-8') as f:\n        content = f.read()\n\nelif ext == 'docx':\n    doc = docx.Document(filename)\n    content = '\\n'.join(p.text.strip() for p in doc.paragraphs)\n\nelif ext == 'pdf':\n    pdf = fitz.open(filename)\n    content = '\\n'.join(page.get_text() for page in pdf)\n  \n_items[0][\"json\"][\"text\"] = content\n  \nreturn _items"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4000,
+        2544
+      ],
+      "id": "b44f4657-e080-49f4-88f1-19a5822c394f",
+      "name": "Extract content"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const raw = $('Analyze document').first().json.output;\n  const parsed = JSON.parse(raw);\n  const html = parsed.text;\n  const filename = $('Configure').first().json['output file name'] || 'output.html';\n  const buffer = Buffer.from(html, 'utf8');\n  item.binary = item.binary || {};\n  item.binary.data = await this.helpers.prepareBinaryData(\n    buffer,\n    filename,\n    'text/html'\n  );\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2944,
+        2336
+      ],
+      "id": "4956b660-b3fe-4fdf-a110-2699624903a3",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/output_docs/{{$('Configure').item.json['output file name']}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -2704,
+        2336
+      ],
+      "id": "82c4efa9-8cc3-445c-a871-bdc64b29d6a2",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Configure').item.json.body.filename }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -3280,
+        2720
+      ],
+      "id": "3e7ed93c-0cf8-4ee3-b0b8-62c580398f3b",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $('Analyze document').first().json.output;\nconst parsed = JSON.parse(raw);\n\nreturn [{\n  json: {\n    company: parsed.company,\n    year:    parsed.year,\n    text:    parsed.text   // the HTML string\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2944,
+        2528
+      ],
+      "id": "e45ba829-2ff1-458d-ae5e-81dd66b2318d",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Extract content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Configure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze document",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configure": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrails": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Analyze document",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Guardrails",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze document": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "enrichment_tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyze document",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "prompting_information",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "prompting_information",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prompting_information": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "assistant": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyze document",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google_sheet_tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gmail_tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract content": {
+      "main": [
+        [
+          {
+            "node": "Guardrails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Analyze document",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ef361882-7abe-43ad-bf13-175afc9a4de7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f097b0f5ff1c01aa69571fafaa40e26daef8c6ae39d2132ff6f0ce3ce11299c2"
+  },
+  "id": "XXAPQD3NFVAvySco",
+  "tags": []
+}
