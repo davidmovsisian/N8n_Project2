@@ -48,30 +48,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -4192,
-        2720
+        -3856,
+        2560
       ],
       "id": "fb71d27c-3f37-43f5-bbb9-c542f0115498",
       "name": "If"
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "document-intake",
-        "responseMode": "responseNode",
-        "options": {
-          "binaryPropertyName": "data"
-        }
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [
-        -4624,
-        2720
-      ],
-      "id": "0103f02c-85c1-43f8-ac92-774380cd7062",
-      "name": "Webhook",
-      "webhookId": "bc04ec10-5db2-47cc-adc8-2c858e1dfaae"
     },
     {
       "parameters": {
@@ -88,8 +69,8 @@
       "type": "@n8n/n8n-nodes-langchain.guardrails",
       "typeVersion": 2,
       "position": [
-        -3792,
-        2544
+        -3456,
+        2384
       ],
       "id": "e01b2f9a-3e95-4e7c-8d34-a4190a3b3824",
       "name": "Guardrails"
@@ -101,8 +82,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -3664,
-        2912
+        -3280,
+        2736
       ],
       "id": "99333b9a-76bf-4004-95fa-74017f14e540",
       "name": "Error Respond"
@@ -121,8 +102,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -3408,
-        2720
+        -3072,
+        2560
       ],
       "id": "0eb7ed5b-6674-425b-8eab-ade358f337e3",
       "name": "OpenAI Chat Model",
@@ -170,8 +151,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -4416,
-        2720
+        -4080,
+        2560
       ],
       "id": "48429219-1a15-4153-b296-8890e92f4c50",
       "name": "Configure"
@@ -189,8 +170,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -3808,
-        2736
+        -3472,
+        2576
       ],
       "id": "b544c1dd-75d2-4e6e-9842-5c26a4f3b0a6",
       "name": "OpenAI Chat Model2",
@@ -204,16 +185,16 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Analyze the following extracted text from a financial report.\n{{ $json.guardrailsInput }}\n\n##Order of execution:##\n\nStep 1. Analyze the extracted text and create an initial report as a JSON STRUCTURED object with the following fields:\n  - company: full company name\n  - year: year of report\n  - classification: financial document type\n  - summary: concise, maximum 200 characters\n  - entities.people: list of key executives mentioned\n  - entities.monetary_values: list of objects with keys:\n      label -> description of the line item (e.g., \"Total net sales\")\n      value -> amount with currency symbol\n  - entities.geographic_sales: object where key = region, value = net sales for that region\n  - entities.financial_ratios: list of objects with keys:\n      name -> name of the financial ratio (e.g., \"Net Profit Margin\")\n      value -> percentage or ratio value\n  - sentiment.score: exactly one of: Positive, Neutral, or Negative\n  - sentiment.rationale: concise, maximum 200 characters\n  - action_items: exactly 3 concise string items\n\nStep 2. Call enrichment_tool EXACTLY ONCE, passing the full JSON object from Step 1.\n  The enrichment_tool returns a JSON object under metadata key. Merge returned JSON object into your working object.\n  Example structure after merge:\n  {\n    \"company\": \"...\",\n    ...\n    \"metadata\": { \"document_id\": \"...\", ... } \n  }\n\nStep 3. Generate an HTML report of the full analysis.\n\t1. Executive Summary – 3–4 sentence overview\n\t2. Key Financial Highlights – bullet points on top metrics\n\t3. Geographic Breakdown – brief narrative on sales by region  \n\t4. Risks & Watch Items – based on the action items\n\t5. Sentiment – overall tone and rationale\n\t6. Use clear headings, bullet points, and tables where appropriate to ensure the output is professional and easy to scan.\n\tStore this as your working HTML string for use in Step 4.\n\nStep 4. Call assistant tool EXACTLY ONCE with a JSON object containing two keys:\n\t{\n\t  \"sheet_row\": {\n\t\t\"document_id\":      metadata.document_id,\n\t\t\"company\":          company,\n\t\t\"year\":             year (as a string),\n\t\t\"filename\":         {{ $('Configure').item.json['input file name'] }},\n\t\t\"processed_at\":     metadata.timestamp,\n\t\t\"classification\":   classification,\n\t\t\"sentiment\":        sentiment.score only,\n\t\t\"confidence_score\": metadata.confidence_adjustment (as a string),\n\t\t\"summary\":          summary,\n\t\t\"routing_tag\":      metadata.routing_tag,\n\t\t\"sensitivity\":      metadata.sensitivity,\n\t\t\"action_items\":     the 3 action items joined by \" | \"\n\t  },\n\t  \"html_report\": the complete HTML string generated in Step 3\n\t}\nDo not nest objects inside sheet_row. Every sheet_row value must be a plain string.\n",
+        "text": "=Analyze the following extracted text from a financial report.\n{{ $json.guardrailsInput }}\n\n##Order of execution:##\n\nStep 1. Analyze the extracted text and create an initial report as a JSON STRUCTURED object with the following fields:\n  - company: full company name\n  - year: year of report\n  - classification: financial document type\n  - summary: concise, maximum 200 characters\n  - entities.people: list of key executives mentioned\n  - entities.monetary_values: list of objects with keys:\n      label -> description of the line item (e.g., \"Total net sales\")\n      value -> amount with currency symbol\n  - entities.geographic_sales: object where key = region, value = net sales for that region\n  - entities.financial_ratios: list of objects with keys:\n      name -> name of the financial ratio (e.g., \"Net Profit Margin\")\n      value -> percentage or ratio value\n  - sentiment.score: exactly one of: Positive, Neutral, or Negative\n  - sentiment.rationale: concise, maximum 200 characters\n  - action_items: exactly 3 concise string items\n\nStep 2. Call enrichment_tool EXACTLY ONCE, passing the full JSON object from Step 1.\n  The enrichment_tool returns a JSON object under metadata key. Merge returned JSON object into your working object.\n  Example structure after merge:\n  {\n    \"company\": \"...\",\n    ...\n    \"metadata\": { \"document_id\": \"...\", ... } \n  }\n\nStep 3. Generate an HTML report of the full analysis.\n\t1. Executive Summary – 3–4 sentence overview\n\t2. Key Financial Highlights – bullet points on top metrics.\n    3. Key finantial ratios - derived from  entities.financial_ratios\n\t4. Geographic Breakdown – brief narrative on sales by region  \n\t5. Risks & Watch Items – based on the action items\n\t6. Sentiment – overall tone and rationale\n\t7. Use clear headings, bullet points, and tables where appropriate to ensure the output is professional and easy to scan.\n\tStore this as your working HTML string for use in Step 4.\n\nStep 4. Call assistant tool EXACTLY ONCE with a JSON object containing two keys:\n\t{\n\t  \"sheet_row\": {\n\t\t\"document_id\":      metadata.document_id,\n\t\t\"company\":          company,\n\t\t\"year\":             year (as a string),\n\t\t\"filename\":         {{ $('Configure').item.json['input file name'] }},\n\t\t\"processed_at\":     metadata.timestamp,\n\t\t\"classification\":   classification,\n\t\t\"sentiment\":        sentiment.score only,\n\t\t\"confidence_score\": metadata.confidence_adjustment (as a string),\n\t\t\"summary\":          summary,\n\t\t\"routing_tag\":      metadata.routing_tag,\n\t\t\"sensitivity\":      metadata.sensitivity,\n\t\t\"action_items\":     the 3 action items joined by \" | \"\n\t  },\n\t  \"html_report\": the complete HTML string generated in Step 3\n\t}\nDo not nest objects inside sheet_row. Every sheet_row value must be a plain string.\n\nAfter completing all steps, output ONLY a valid JSON object with exactly these three keys:\n{\n  \"company\": \"<full company name>\",\n  \"year\": \"<year as string>\",\n  \"text\": \"<the complete HTML report from Step 3>\"\n}\n",
         "options": {
-          "systemMessage": "=You are the financial documentation analyst and a cost-aware router.\n\nYou have access to the following tools:\n1. assistant tool: send email, append row to Google Sheet, save analysis.\n2. enrichment_tool: HTTP tool to enrich the analysis with business-specific metadata.\n\nAfter completing all steps, output ONLY a valid JSON object with exactly these three keys:\n{\n  \"company\": \"<full company name>\",\n  \"year\": \"<year as string>\",\n  \"text\": \"<the complete HTML string from Step 3>\"\n}\n\nRules:\n- Do not include any markdown formatting, preamble, or postscript.\n- Do not add any explanation.\n- Do not call enrichment_tool more than once.\n- Do not call assistant more than once.\n"
+          "systemMessage": "=You are the financial documentation analyst and a cost-aware router.\n\nYou have access to the following tools:\n1. assistant tool: send email, append row to Google Sheet.\n2. enrichment_tool: HTTP tool to enrich the analysis with business-specific metadata.\n\nRules:\n- Do not include any markdown formatting, preamble, or postscript.\n- Do not add any explanation.\n- Do not call enrichment_tool more than once.\n- Do not call assistant more than once.\n"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -3296,
-        2528
+        -2960,
+        2368
       ],
       "id": "7c386bef-126a-48c3-ac57-66d874017dcd",
       "name": "Analyze document"
@@ -230,8 +211,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        -2800,
-        2736
+        -2464,
+        2576
       ],
       "id": "3eb0036f-c069-42d1-8508-85c01f6025ab",
       "name": "enrichment_tool"
@@ -249,8 +230,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -3104,
-        3024
+        -2768,
+        2880
       ],
       "id": "95fc3574-af38-45fd-a048-43518eb5d6bb",
       "name": "OpenAI Chat Model3",
@@ -268,8 +249,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -2688,
-        2528
+        -2352,
+        2368
       ],
       "id": "b27194e0-3793-4a08-b045-137db19aa0f6",
       "name": "Respond to Webhook1"
@@ -284,8 +265,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -2048,
-        1936
+        -4528,
+        3104
       ],
       "id": "7786d67a-368d-43df-a8bd-26d3ed810d4f",
       "name": "Webhook1",
@@ -302,8 +283,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -1760,
-        1936
+        -4240,
+        3104
       ],
       "id": "3fe68898-46be-4263-9d8c-c48586b7ed7c",
       "name": "AI Agent"
@@ -316,8 +297,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -1760,
-        2144
+        -4240,
+        3312
       ],
       "id": "867519a8-dcd7-4afb-adf7-233c2784b150",
       "name": "Simple Memory1"
@@ -335,8 +316,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
       "typeVersion": 1.3,
       "position": [
-        -1680,
-        2288
+        -4160,
+        3456
       ],
       "id": "091d333f-54d8-4a9b-a130-e7a8c833243d",
       "name": "Pinecone Vector Store1",
@@ -356,8 +337,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        -1600,
-        2496
+        -4080,
+        3664
       ],
       "id": "b82e45f9-0cf5-4423-8823-df9e88efdb87",
       "name": "Embeddings OpenAI1",
@@ -381,8 +362,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -1328,
-        2272
+        -3808,
+        3440
       ],
       "id": "fc346f78-0657-4329-9434-7b378f877a9c",
       "name": "OpenAI Chat Model4",
@@ -401,8 +382,8 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -2096,
-        1888
+        -4576,
+        3056
       ],
       "typeVersion": 1,
       "id": "d6879f0e-e7f2-4d06-ad60-f31da9fbe569",
@@ -415,8 +396,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -1408,
-        1936
+        -3888,
+        3104
       ],
       "id": "8d764e45-529e-4349-aaf1-a7b456fb62ad",
       "name": "Respond to Webhook2"
@@ -428,8 +409,8 @@
       "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
       "typeVersion": 1.1,
       "position": [
-        -1456,
-        2096
+        -3936,
+        3264
       ],
       "id": "cc0557f9-562d-4b3e-9013-040ea4c28853",
       "name": "prompting_information"
@@ -447,8 +428,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -1904,
-        2144
+        -4384,
+        3312
       ],
       "id": "f184c89a-5767-45f8-a834-efdb0d3b28a3",
       "name": "OpenAI Chat Model5",
@@ -473,8 +454,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
       "typeVersion": 1.3,
       "position": [
-        -3552,
-        1984
+        -3568,
+        2944
       ],
       "id": "f5e61829-30f7-4758-b01e-5a0fc2c49b37",
       "name": "Pinecone Vector Store",
@@ -494,8 +475,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        -3552,
-        2192
+        -3584,
+        3232
       ],
       "id": "07610f3a-2b1d-4885-9a71-cfef552f2a6b",
       "name": "Embeddings OpenAI",
@@ -515,7 +496,7 @@
       "typeVersion": 1.1,
       "position": [
         -3424,
-        2192
+        3104
       ],
       "id": "fa01c2e8-36d1-4aae-bd90-f1c051e86d38",
       "name": "Default Data Loader"
@@ -528,8 +509,8 @@
       "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
       "typeVersion": 1,
       "position": [
-        -3264,
-        2320
+        -3376,
+        3264
       ],
       "id": "7b32f757-722e-478d-ad03-b703d9cdccfd",
       "name": "Recursive Character Text Splitter"
@@ -545,8 +526,8 @@
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "typeVersion": 3,
       "position": [
-        -3104,
-        2848
+        -2768,
+        2688
       ],
       "id": "47d76e8f-b7ac-4c5c-b2c0-1d81d06a3bbd",
       "name": "assistant"
@@ -717,8 +698,8 @@
       "type": "n8n-nodes-base.googleSheetsTool",
       "typeVersion": 4.7,
       "position": [
-        -2848,
-        2944
+        -2512,
+        2784
       ],
       "id": "3dd884a9-49a3-41d2-b80f-a2a9ba53ff0a",
       "name": "google_sheet_tool",
@@ -739,8 +720,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        -2736,
-        2944
+        -2400,
+        2784
       ],
       "id": "7b657a1f-2d1c-4cb8-99a9-7fce1181bddf",
       "name": "gmail_tool",
@@ -760,8 +741,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4000,
-        2544
+        -3664,
+        2384
       ],
       "id": "b44f4657-e080-49f4-88f1-19a5822c394f",
       "name": "Extract content"
@@ -773,8 +754,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2944,
-        2336
+        -2608,
+        2176
       ],
       "id": "4956b660-b3fe-4fdf-a110-2699624903a3",
       "name": "Code in JavaScript"
@@ -788,8 +769,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        -2704,
-        2336
+        -2368,
+        2176
       ],
       "id": "82c4efa9-8cc3-445c-a871-bdc64b29d6a2",
       "name": "Read/Write Files from Disk"
@@ -797,13 +778,13 @@
     {
       "parameters": {
         "sessionIdType": "customKey",
-        "sessionKey": "={{ $('Configure').item.json.body.filename }}"
+        "sessionKey": "={{ $('Configure').item.json['input file name'] }}"
       },
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -3280,
-        2720
+        -2944,
+        2560
       ],
       "id": "3e7ed93c-0cf8-4ee3-b0b8-62c580398f3b",
       "name": "Simple Memory"
@@ -815,11 +796,225 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2944,
-        2528
+        -2608,
+        2368
       ],
       "id": "e45ba829-2ff1-458d-ae5e-81dd66b2318d",
       "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "430163cf-42a2-43dc-a018-936c66544c61",
+              "leftValue": "={{$json.isEmpty()}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4384,
+        2576
+      ],
+      "id": "82cec3cb-0949-4bec-8b92-8c5ceed2d63c",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/home/node/output_docs/{{ $('Webhook').item.json.body.filename.replace('pdf','html') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -4688,
+        2800
+      ],
+      "id": "da2fa682-4d0f-4458-90af-5e05bfd8b593",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE",
+          "mode": "list",
+          "cachedResultName": "report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nRfhxQVoVuU3SE80t5B9bXYS5YdrM6q6Q12ro2EF0NE/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "filename",
+              "lookupValue": "={{ $json.body.filename}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4576,
+        2576
+      ],
+      "id": "cd11fd18-7d49-4f21-bfc8-0940a0669ef6",
+      "name": "If file proceed already",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3cf50rQQBIo12zeA",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4320,
+        2800
+      ],
+      "id": "b226d340-780f-4c78-8b87-02be01701a98",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const binaryData = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst htmlString = binaryData.toString('utf8');\n\nreturn [{\n  json: {\n    text: htmlString\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4496,
+        2800
+      ],
+      "id": "f25cfa4b-746c-4e36-a5ac-531d85a869c0",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "content": "## If file proceed return cashed version\n",
+        "height": 512,
+        "width": 768,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4880,
+        2496
+      ],
+      "typeVersion": 1,
+      "id": "313c0fcc-c4e8-401f-b204-68fde5f3a621",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Read file content and make Guardrails validations",
+        "height": 544,
+        "width": 1008,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4096,
+        2320
+      ],
+      "typeVersion": 1,
+      "id": "7a14c431-0372-4d40-8b41-cb36e944c470",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Agentic flow\n",
+        "height": 1232,
+        "width": 928,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3072,
+        2144
+      ],
+      "typeVersion": 1,
+      "id": "f75c8a2b-fb68-445f-8cee-6fdc1bc93a51",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## RAG Load Data",
+        "height": 624,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3616,
+        2880
+      ],
+      "typeVersion": 1,
+      "id": "413a23bc-9ac5-4d82-8603-82a4ef7a5850",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent with assistand and enrichment tools.\n   Assistand tool manages two another tools, google_sheet_tool and gmail tool\n## Steps.\n## 1. Create initial report, containing the relevat data, in JSON format.\n## 2. Use enrichment tool to enrich the initial report.\n## 3. Create report analysis in HTML format, and merge with initial, store in JSON format \n## 3. Use google_sheet_tool tool to append row to Google sheet, and send email to predefined recipient\n## 4. Save the report analysis in the file, and send response to the client ",
+        "height": 976,
+        "width": 928,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2048,
+        2144
+      ],
+      "typeVersion": 1,
+      "id": "9c92972a-6d63-4e3d-b9a2-6b0d3975f1d2",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "document-intake",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -4816,
+        2576
+      ],
+      "id": "ab75a9cb-1881-47c6-9e41-563bd37c32e4",
+      "name": "Webhook",
+      "webhookId": "bc04ec10-5db2-47cc-adc8-2c858e1dfaae"
     }
   ],
   "pinData": {},
@@ -836,17 +1031,6 @@
         [
           {
             "node": "Error Respond",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "Configure",
             "type": "main",
             "index": 0
           }
@@ -1144,6 +1328,68 @@
           }
         ]
       ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Configure",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If file proceed already": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If file proceed already",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1151,7 +1397,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "ef361882-7abe-43ad-bf13-175afc9a4de7",
+  "versionId": "2c473d0e-e77a-41d3-94a1-97ba4e369c4c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f097b0f5ff1c01aa69571fafaa40e26daef8c6ae39d2132ff6f0ce3ce11299c2"

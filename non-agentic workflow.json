@@ -98,13 +98,13 @@
             {
               "id": "5ea0d46f-a61c-49b0-8a3b-893ab0c69fcd",
               "name": "=classification",
-              "value": "={{ $json.output.classification }}",
+              "value": "={{ $('Analyze document').item.json.output.classification }}",
               "type": "string"
             },
             {
               "id": "9cc2fee8-bf58-4c9e-86a7-b3124f107440",
               "name": "=sentiment",
-              "value": "={{ $json.output.sentiment.rationale }}",
+              "value": "={{ $('Analyze document').item.json.output.sentiment.score }}",
               "type": "string"
             },
             {
@@ -116,14 +116,14 @@
             {
               "id": "d366a2f5-ac51-4677-af30-93981bb71a35",
               "name": "=summary",
-              "value": "={{ $json.output.summary }}",
+              "value": "={{ $('Analyze document').item.json.output.summary }}",
               "type": "string"
             },
             {
               "id": "a82076ad-fff6-4792-96f2-67d169f51777",
               "name": "=routing_tag",
-              "value": "={{ $json.metadata.routing_tags }}",
-              "type": "array"
+              "value": "={{ $json.metadata.routing_tag }}",
+              "type": "string"
             },
             {
               "id": "dac8e51c-5657-48d3-9486-a13cb9d6a70f",
@@ -134,7 +134,7 @@
             {
               "id": "83b34702-efd6-4d30-bc20-1bb7def05f89",
               "name": "=action_items",
-              "value": "= {{ ($json.output.action_items) }}",
+              "value": "= {{ $('Analyze document').item.json.output.action_items.join('|') }}",
               "type": "string"
             }
           ]
@@ -652,93 +652,6 @@
       ],
       "id": "16b6a400-77d5-4907-ad80-050215476b7c",
       "name": "Save to file"
-    },
-    {
-      "parameters": {
-        "html_content": "=<html>{{ $json.text }}</html>",
-        "output_filename": "",
-        "dynamic_params": {
-          "params": [
-            {
-              "key": "filename",
-              "value": "Summary.pdf"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-htmlcsstopdf.htmlcsstopdf",
-      "typeVersion": 1,
-      "position": [
-        176,
-        -208
-      ],
-      "id": "d4239d97-428a-4fcb-9e86-16b5eac3bf9e",
-      "name": "Convert HTML to PDF",
-      "credentials": {
-        "htmlcsstopdfApi": {
-          "id": "HitEQRxZ2Yuylsxy",
-          "name": "HTML to PDF account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "url": "={{ $json.pdf_url }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        400,
-        -208
-      ],
-      "id": "7885ff6d-a024-494d-ba23-19b9f0e7087d",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "content": "## Convert summary to pdf and send to gmail",
-        "height": 288,
-        "width": 736
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        144,
-        -320
-      ],
-      "typeVersion": 1,
-      "id": "05cc86a0-15e3-4a3b-be28-645c14a16adf",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
-        "sendTo": "={{ $('Configure').item.json.recipient }}",
-        "subject": "={{ $('Enrich content').item.json.output.classification + ', ' + $('Enrich content').item.json.output.company }}",
-        "emailType": "text",
-        "message": "={{'Link to Google Sheet: ' }}{{ $('Configure').item.json['google sheet link'] }}",
-        "options": {
-          "attachmentsUi": {
-            "attachmentsBinary": [
-              {}
-            ]
-          }
-        }
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "position": [
-        640,
-        -208
-      ],
-      "id": "a73f070f-e425-4638-8ce0-bb81597c1c28",
-      "name": "Send a message2",
-      "webhookId": "16090bfc-0a06-4ef9-8200-c7c5e32f1a80",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "MExQ6DcvGPlc7HY8",
-          "name": "Gmail account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1463,6 +1376,93 @@
       ],
       "id": "eb145a20-1444-41b5-81b5-d71a61867863",
       "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Configure').item.json.recipient }}",
+        "subject": "={{ $('Enrich content').item.json.output.classification + ', ' + $('Enrich content').item.json.output.company }}",
+        "emailType": "text",
+        "message": "={{'Link to Google Sheet: ' }}{{ $('Configure').item.json['google sheet link'] }}",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        -208
+      ],
+      "id": "a73f070f-e425-4638-8ce0-bb81597c1c28",
+      "name": "Send a message2",
+      "webhookId": "16090bfc-0a06-4ef9-8200-c7c5e32f1a80",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MExQ6DcvGPlc7HY8",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Convert summary to pdf and send to gmail",
+        "height": 240,
+        "width": 736
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "05cc86a0-15e3-4a3b-be28-645c14a16adf",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pdf_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        400,
+        -208
+      ],
+      "id": "7885ff6d-a024-494d-ba23-19b9f0e7087d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "html_content": "=<html>{{ $json.text }}</html>",
+        "output_filename": "",
+        "dynamic_params": {
+          "params": [
+            {
+              "key": "filename",
+              "value": "Summary.pdf"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-htmlcsstopdf.htmlcsstopdf",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -208
+      ],
+      "id": "d4239d97-428a-4fcb-9e86-16b5eac3bf9e",
+      "name": "Convert HTML to PDF",
+      "credentials": {
+        "htmlcsstopdfApi": {
+          "id": "HitEQRxZ2Yuylsxy",
+          "name": "HTML to PDF account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1638,28 +1638,6 @@
           },
           {
             "node": "Read/Write Files from Disk",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Convert HTML to PDF": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Send a message2",
             "type": "main",
             "index": 0
           }
@@ -1958,6 +1936,28 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert HTML to PDF": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1965,7 +1965,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "19e43498-dec5-4cff-a8ef-a6509cefee2e",
+  "versionId": "2610a201-2f54-400d-8deb-3d8c59b9b771",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f097b0f5ff1c01aa69571fafaa40e26daef8c6ae39d2132ff6f0ce3ce11299c2"
