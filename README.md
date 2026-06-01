@@ -8,7 +8,7 @@ A web-based interface is available at `GET /` served by the Flask enrichment ser
 1. User drags and drops (or picks) a file in the browser.
 2. The browser sends `POST /upload-file` (multipart/form-data) to Flask.
 3. Flask validates the file and saves it to `/home/node/incoming_docs`.
-4. Flask calls the configured n8n webhook passing the filename in the `X-Filename` header.
+4. Flask calls the configured n8n webhook passing the filename in the body.
 5. n8n reads the file from `/home/node/incoming_docs` and processes it.
 6. Flask returns the n8n response as structured JSON.
 7. The browser renders the result (HTML preview or JSON) in the preview panel.
@@ -17,7 +17,7 @@ A web-based interface is available at `GET /` served by the Flask enrichment ser
    - For all other responses, formatted JSON is displayed.
 
 ### Supported file types
-`.pdf`, `.docx`, `.txt`, `.png`, `.jpg`, `.jpeg`
+`.pdf`, `.docx`, `.txt`
 
 ### Environment configuration
 
@@ -67,19 +67,12 @@ A realistic payload fixture is included at:
 
 ## n8n integration
 
-The workflow (`N8N_Project.json`) now contains an HTTP Request node named exactly **`Enrich analysys`**.
+The workflow (`N8N_Project.json`) contains an HTTP Request node named exactly **`Enrich analysys`**.
 
 - It calls `POST /enrich` on the enrichment service.
 - It uses environment variable `ENRICH_SERVICE_BASE_URL` with fallback to `http://enrichment-service:8000`.
 
-`docker-compose.yaml` now includes an `enrichment-service` container and sets:
+`docker-compose.yaml` includes an `enrichment-service` container and sets:
 - `ENRICH_SERVICE_BASE_URL=http://enrichment-service:8000`
 - The enrichment service container is built from `Dockerfile.enrichment`
 - The enrichment service mounts shared named volumes for `incoming_docs` and `output_docs`
-
-## Tests
-
-Run the microservice tests:
-```bash
-python -m unittest discover -s tests -p "test_*.py"
-```
